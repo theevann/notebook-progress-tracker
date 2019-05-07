@@ -1,0 +1,35 @@
+{% extends "default.html" %}
+{% set active_page = "records" %}
+
+{% block head %}
+    {{ super() }}
+    <title>Records</title>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row header">
+            {% for field in toshow %}
+                <div class="{{ 'col-sm-4' if field == "f_data" else 'col-sm-2' }}">
+                        {{ field }}
+                </div>
+            {% endfor %}
+        </div>
+        {% for record in records %}
+            <div class="row">
+                {% for field in toshow %}
+                    {% if field == "f_data" %}
+                        <div class="col-sm-4">
+                                {{ record[field] | safe }}
+                        </div>
+                    {% else %}
+                        <div class="col-sm-2">
+                                {{ record[field] }}
+                        </div>
+                    {% endif %}
+
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

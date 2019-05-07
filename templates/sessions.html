@@ -1,0 +1,45 @@
+{% extends "default.html" %}
+{% set active_page = "sessions" %}
+
+{% block head %}
+    {{ super() }}
+    <title>Sessions</title>
+{% endblock %}
+
+
+{% block content %}
+   <div class="container">
+
+    <form class="form-inline" action="/add-session" method="POST">
+        <div class="form-group mr-3">
+            <label class="sr-only" for="inputName">Name</label>
+            <input type="text" class="form-control" id="inputName" name='name' placeholder="Session name">
+        </div>
+        <div class="form-group mr-3">
+            <label class="sr-only" for="inputOwner">Owner</label>
+            <input type="text" class="form-control" id="inputOwner" name='owner' placeholder="Session owner">
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+    </div>
+
+
+    <div class="container">
+        <div class="row header">
+            {% for field in sessions[0] %}
+                <div class="col-sm">
+                        {{ field }}
+                </div>
+            {% endfor %}
+        </div>
+        {% for session in sessions %}
+            <div class="row" onclick="window.location.href = '/records?id={{ session['id'] }}';">
+                {% for field in session %}
+                    <div class="col-sm">
+                            {{ session[field] }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

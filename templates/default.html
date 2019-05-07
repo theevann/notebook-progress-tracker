@@ -1,0 +1,41 @@
+{% set navigation_bar = [
+    ('/sessions', 'sessions', 'Sessions'),
+    ("/records", 'records', 'Records')
+] -%}
+
+{% set active_page = active_page|default('sessions') -%}
+
+<html>
+    <head>
+        {% block head %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='common.css') }}">
+        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+        {% endblock %}
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">All {{ active_page }}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% for href, id, caption in navigation_bar %}
+                    <li class="nav-item {{ 'active' if id == active_page else ''}}">
+                        <a class="nav-link" href="{{ href|e }}">{{ caption|e }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            </div>
+        </nav>
+
+        {% block content %}
+        {% endblock %}
+
+    </body>
+</html>
