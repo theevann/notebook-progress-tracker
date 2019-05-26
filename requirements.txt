@@ -1,0 +1,7 @@
+flask
+flask_sqlalchemy
+mysql
+mysql-connector
+python-dotenv
+pytz
+numpy

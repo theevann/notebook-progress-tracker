@@ -14,6 +14,14 @@ from sqlalchemy import func
 from jinja2 import evalcontextfilter, Markup, escape
 
 
+################################## Load env variables
+
+import os
+from dotenv import load_dotenv
+
+project_folder = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(project_folder, 'app-env'))
+
 
 
 # TODO: make an owner page, protect by password, add more fields
@@ -34,13 +42,13 @@ app.config["DEBUG"] = True
 
 ################################## Database conf
 
-
 SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
     username=os.getenv("DB_USERNAME"),
     password=os.getenv("DB_PASSWORD"),
     hostname=os.getenv("DB_HOSTNAME"),
-    databasename="courdier$notebook-tracker",
+    databasename=os.getenv("DB_NAME"),
 )
+
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

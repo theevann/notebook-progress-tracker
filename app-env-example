@@ -1,0 +1,4 @@
+export DB_PASSWORD="npt-password"
+export DB_USERNAME="npt-user"
+export DB_HOSTNAME="localhost"
+export DB_NAME="npt"
