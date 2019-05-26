@@ -2,6 +2,7 @@
 {% set active_page = "sessions" %}
 
 {% block head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     {{ super() }}
     <title>Sessions</title>
 {% endblock %}
@@ -25,9 +26,9 @@
 
     <div class="container">
         <div class="row header">
-            {% for field in fields %}
+            {% for name, field in fields %}
                 <div class="col-sm">
-                        {{ field }}
+                        {{ name }}
                 </div>
             {% endfor %}
             <div class="col-sm-1">
@@ -36,15 +37,23 @@
         </div>
         {% for session in sessions %}
             <div class="row">
-                {% for field in fields %}
+                {% for name, field in fields %}
+                    {% if field == 'open' %}
+                    <div class="col-sm cliquable" onclick="window.location.href = '/toggle-session?id={{ session.id }}';">
+                             {{ "Open" if session.open else "Closed" }}
+                             <i class="fa fa-toggle-{{'on' if session.open else 'off'}}" style="font-size:24px"></i>
+
+                    {% else %}
                     <div class="col-sm">
                             {{ session[field] }}
+                    {% endif %}
                     </div>
                 {% endfor %}
-                <div class="col-sm-1" onclick="window.location.href = '/del-session?id={{ session['id'] }}';">
-                        DEL
+                <div class="col-sm-1 cliquable" onclick="window.location.href = '/del-session?id={{ session.id }}';">
+                    <i class="fa fa-trash"></i>
                 </div>
             </div>
         {% endfor %}
     </div>
+    {{ super() }}
 {% endblock %}

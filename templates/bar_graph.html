@@ -1,0 +1,152 @@
+{% extends "default.html" %}
+{% set active_page = "dashboard" %}
+
+
+{% block head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    {{ super() }}
+    <title>Dashboard</title>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container" style='text-align:center'>
+        <h2>Select a session:
+        <div class="dropdown" style='display:inline'>
+          <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sessions
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% for session in sessions %}
+                <a class="dropdown-item" href="#" onclick="load_data({{ session['id'] }})">{{ session.id }} - {{ session.name }} ({{ session.owner }})  </a>
+            {% endfor %}
+          </div>
+        </div>
+        </h2>
+        <hr>
+        <h2 style='margin-top:25px'><span id="graphtitle"></span><i id="graphrefresh" class="fa fa-refresh" onclick="reload_data()" style="color:black;display:None;font-size:26px"></i></h2>
+    </div>
+
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script>
+
+    // set the dimensions and margins of the graph
+    var margin = {top: 20, right: 20, bottom: 30, left: 40},
+        width = 0.8*document.documentElement.clientWidth - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+    // set the ranges
+    var x = d3.scaleBand()
+              .range([0, width])
+              .padding(0.1);
+    var y = d3.scaleLinear()
+              .range([height, 0]);
+
+    // append the svg object to the body of the page
+    // append a 'group' element to 'svg'
+    // moves the 'group' element to the top left margin
+    var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+      // add the x Axis
+      xGroup = svg.append("g")
+          .attr('class', 'x axis')
+          .attr("transform", "translate(0," + height + ")");
+
+    // get the data
+    let load_data = function(sid) {
+        d3.select('#graphrefresh').classed('fa-spin', true);
+
+        d3.json("/rec-count?sid=" + sid, function(error, data) {
+          if (error) throw error;
+
+          document.cookie = "sid=" + sid;
+          d3.select('#graphtitle').text("Session " + sid);
+          d3.select('#graphrefresh').style('display', 'inline-block');
+          d3.select('#graphrefresh').classed('fa-spin', false);
+
+          // Scale the range of the data in the domains
+          dataMax = d3.max(data, function(d) { return d[1]; });
+          x.domain(data.map(function(d) { return d[0]; }));
+          y.domain([0, dataMax]);
+
+          // append the rectangles for the bar chart
+          bar = svg.selectAll("g.bar")
+              .data(data);
+
+          barEnter = bar.enter().append('g')
+              .attr("class", "bar")
+              .attr("transform", ([d0, d1]) => "translate(" + x(d0) + "," + y(0) + ")");
+
+          barEnter.append("rect")
+              .attr("width", x.bandwidth())
+              .attr("height", 0);
+
+         barEnter.append("text")
+              .attr("class", "inbar")
+              .attr("text-anchor", "middle")
+              .attr("fill", "white")
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "15px")
+              .attr("font-weight", 550)
+              .attr("y", 20)
+              .attr("x", x.bandwidth() / 2);
+
+          barTr = barEnter.merge(bar)
+              .transition(10)
+              .attr("transform", ([d0, d1]) => "translate(" + x(d0) + "," + y(d1) + ")");
+
+          barTr.select("rect")
+              .attr("width", x.bandwidth())
+              .attr("height", function(d) { return height - y(d[1]); });
+
+          barTr.select('text')
+              .attr("x", x.bandwidth() / 2)
+              .text(d => d[1]);
+
+          bar.exit().remove();
+
+          // add the x Axis
+          xGroup.call(d3.axisBottom(x).tickSize(0).tickPadding(10));
+          xGroup.selectAll('text').style('fill', 'rgba(86, 61, 124, 0.6)');
+          xGroup.selectAll('path').style('stroke', 'rgba(86, 61, 124, 0.45)');
+
+        });
+    };
+
+    let getCookie = function(c_name) {
+        var c_value = " " + document.cookie;
+        var c_start = c_value.indexOf(" " + c_name + "=");
+        if (c_start == -1) {
+            c_value = null;
+        }
+        else {
+            c_start = c_value.indexOf("=", c_start) + 1;
+            var c_end = c_value.indexOf(";", c_start);
+            if (c_end == -1) {
+                c_end = c_value.length;
+            }
+            c_value = unescape(c_value.substring(c_start,c_end));
+        }
+        return c_value;
+    }
+
+    let reload_data = function() {
+        sid = getCookie("sid");
+        if (sid != null)
+            load_data(sid);
+    }
+
+    {% if sid is not none %}
+        load_data({{ sid }});
+    {% else %}
+        reload_data();
+    {% endif %}
+
+    </script>
+    {{ super() }}
+{% endblock %}

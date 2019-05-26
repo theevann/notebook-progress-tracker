@@ -8,28 +8,34 @@
 
 {% block content %}
     <div class="container">
+        <!--<p>Pro-Tip: Tu peux utiliser des modificateurs dans l'url: <a href="https://courdier.pythonanywhere.com/records?orderby=question_nb&order=desc&sid=4">https://courdier.pythonanywhere.com/records?orderby=question_nb&order=desc&sid=4</a></p>-->
+        <!--<p>orderby can be: time, question_nb, sender_name, sid</p>-->
         <div class="row header">
-            {% for field in toshow %}
-                <div class="{{ 'col-sm-4' if field == "f_data" else 'col-sm-2' }}">
-                        {{ field }}
+            {% for name, field in fields %}
+                <div class="{{ 'col-sm-4' if field == 'f_data' else 'col-sm-2' }}">
+                        {{ name }}
                 </div>
             {% endfor %}
         </div>
         {% for record in records %}
             <div class="row">
-                {% for field in toshow %}
-                    {% if field == "f_data" %}
+                {% for _, field in fields %}
+                    {% if field == 'f_data' %}
                         <div class="col-sm-4">
-                                {{ record[field] | safe }}
+                            {% if record.type == 'image' %}
+                                <img class="image" src="data:;base64,{{ record.f_data }}" style="max-width:100%;max-height:100%;"/>
+                            {% else %}
+                                {{ record.f_data | nl2br }}
+                            {% endif %}
                         </div>
                     {% else %}
-                        <div class="col-sm-2">
-                                {{ record[field] }}
+                        <div class="{{ 'col-sm-4' if field == 'f_data' else 'col-sm-2' }}">
+                            {{ record[field] | nl2br }}
                         </div>
                     {% endif %}
-
                 {% endfor %}
             </div>
         {% endfor %}
     </div>
+    {{ super() }}
 {% endblock %}

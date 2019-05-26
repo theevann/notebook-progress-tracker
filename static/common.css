@@ -3,14 +3,58 @@
     background-color: rgba(86, 61, 124, 0.28);
 }
 
+.mjx-chtml {
+    font-size: 95% !important;
+}
 
 .col-sm, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6 {
     padding-top: .75rem;
     padding-bottom: .75rem;
     background-color: rgba(86,61,124,.15);
     border: 1px solid rgba(86,61,124,.2);
+    text-align: center;
+    font-size: 1.2em;
 }
 
 nav {
     margin-bottom: 20px;
+}
+
+.cliquable{
+cursor:pointer;
+}
+
+
+.fa {
+    border: none;
+    color: #3e0d484d;
+    padding: 2px 6px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.image:hover {
+    position:relative;
+    left:-100%;
+    width:200%;
+    height:auto;
+    display:block;
+    z-index:999;
+    max-height: none !important;
+    max-width: none !important;
+}
+
+/*  BAR  */
+
+svg {
+    display: block;
+    margin: auto;
+}
+
+.axis {
+    font-size: 15px;
+}
+
+.bar, .axis {
+    fill: rgba(86, 61, 124, 0.45);
 }
