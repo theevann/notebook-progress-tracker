@@ -7,35 +7,19 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <!--<p>Pro-Tip: Tu peux utiliser des modificateurs dans l'url: <a href="https://courdier.pythonanywhere.com/records?orderby=question_nb&order=desc&sid=4">https://courdier.pythonanywhere.com/records?orderby=question_nb&order=desc&sid=4</a></p>-->
-        <!--<p>orderby can be: time, question_nb, sender_name, sid</p>-->
-        <div class="row header">
-            {% for name, field in fields %}
-                <div class="{{ 'col-sm-4' if field == 'f_data' else 'col-sm-2' }}">
-                        {{ name }}
-                </div>
-            {% endfor %}
-        </div>
-        {% for record in records %}
-            <div class="row">
-                {% for _, field in fields %}
-                    {% if field == 'f_data' %}
-                        <div class="col-sm-4">
-                            {% if record.type == 'image' %}
-                                <img class="image" src="data:;base64,{{ record.f_data }}" style="max-width:100%;max-height:100%;"/>
-                            {% else %}
-                                {{ record.f_data | nl2br }}
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <div class="{{ 'col-sm-4' if field == 'f_data' else 'col-sm-2' }}">
-                            {{ record[field] | nl2br }}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% endfor %}
-    </div>
+
+    <div id='records-list' class="container"></div>
+
     {{ super() }}
+
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="static/records.js"></script>
+
+    <!-- <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/babel" src="static/src/records.jsx"></script> -->
 {% endblock %}

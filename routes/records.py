@@ -7,20 +7,20 @@ from models.base import db
 from models import Session, Record
 
 from sqlalchemy import func
-from flask import Blueprint, render_template, request, redirect, url_for, make_response
+from flask import Blueprint, render_template, request, redirect, url_for, make_response, jsonify
 
 
 records_bp = Blueprint('records', __name__)
 
 
 @records_bp.route('/records', methods=["GET"])
-def get_records():
+def show_records():
     fields=[('Session ID', 'session_id'), ('Name', 'sender_name'), ('Date', 'f_time'), ('Question number', 'question_nb'), ('Answer', 'f_data')]
     records = db.session.query(Record)
 
     if 'sid' in request.args:
         sid = int(request.args['sid'])
-        records = records.filter(Record.session_id==sid)
+        records = records.filter(Record.session_id == sid)
 
     if 'orderby' in request.args and hasattr(Record, request.args['orderby']):
         field_to_order = getattr(Record, request.args['orderby'])
@@ -29,6 +29,13 @@ def get_records():
         records = records.order_by(field_to_order)
 
     return render_template("records.html", records=records, fields=fields)
+
+
+@records_bp.route('/get-records', methods=["GET"])
+def get_records():
+    all_records = Record.query.all()
+    dict_records = [s.to_dict() for s in all_records]
+    return jsonify(dict_records)
 
 
 @records_bp.route('/add-record', methods=["POST"])

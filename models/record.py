@@ -27,6 +27,10 @@ class Record(db.Model):
 
     session = relationship("Session", back_populates="records")
 
+    def to_dict(self):
+        fields = ['id', 'session_id', 'sender_name', 'sender_ip', 'question_nb', 'f_time', 'type', 'f_data']
+        return {f: getattr(self, f) for f in fields}
+
     def format_data(self):
         data = "Not Supported"
         if self.type == 'ndarray':
@@ -45,8 +49,8 @@ class Record(db.Model):
     def f_time(self):
         date = pytz.utc.localize(self.time).astimezone(paris)
         return date.strftime("%d/%m/%Y  %H:%M")
-    
-    
+
+
 def format_array(a):
     if len(a.shape) > 2:
         return str(a)

@@ -21,6 +21,10 @@ class Session(db.Model):
 
     records = relationship("Record", back_populates="session")
 
+    def to_dict(self):
+        fields = ['id', 'name', 'owner', 'f_creation_date', 'open']
+        return {f: getattr(self, f) for f in fields}
+
     @classmethod
     def columns(cls):
         return cls.__table__.columns._data.keys()

@@ -2,15 +2,16 @@
 {% set active_page = "sessions" %}
 
 {% block head %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     {{ super() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Sessions</title>
 {% endblock %}
 
 
 {% block content %}
+
     <div class="container">
-        <form class="form-inline justify-content-center" action="/add-session" method="POST">
+        <form class="form-inline justify-content-center" action="javascript:;" onsubmit="add_session(this)" method="POST">
             <div class="form-group mr-3">
                 <label class="sr-only" for="inputName">Name</label>
                 <input type="text" class="form-control" id="inputName" name='name' placeholder="Session name">
@@ -23,37 +24,16 @@
         </form>
     </div>
 
+    <div id='session-list' class="container"></div>
 
-    <div class="container">
-        <div class="row header">
-            {% for name, field in fields %}
-                <div class="col-sm">
-                        {{ name }}
-                </div>
-            {% endfor %}
-            <div class="col-sm-1">
-                Delete
-            </div>
-        </div>
-        {% for session in sessions %}
-            <div class="row">
-                {% for name, field in fields %}
-                    {% if field == 'open' %}
-                    <div class="col-sm cliquable" onclick="window.location.href = '/toggle-session?id={{ session.id }}';">
-                             {{ "Open" if session.open else "Closed" }}
-                             <i class="fa fa-toggle-{{'on' if session.open else 'off'}}" style="font-size:24px"></i>
-
-                    {% else %}
-                    <div class="col-sm">
-                            {{ session[field] }}
-                    {% endif %}
-                    </div>
-                {% endfor %}
-                <div class="col-sm-1 cliquable" onclick="window.location.href = '/del-session?id={{ session.id }}';">
-                    <i class="fa fa-trash"></i>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
     {{ super() }}
+
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="static/sessions.js"></script>
+
+    <!-- <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script> -->
+    <!-- <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
+    <!-- <script type="text/babel" src="static/src/sessions.jsx"></script> -->
 {% endblock %}
