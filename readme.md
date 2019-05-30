@@ -21,7 +21,7 @@ sudo systemctl enable mysql
 ```sh
 git clone https://github.com/theevann/notebook-progress-tracker.git
 cd notebook-progress-tracker
-virtualenv nptenv
+virtualenv -p python3 nptenv
 source nptenv/bin/activate
 pip install -r requirements.txt
 ```

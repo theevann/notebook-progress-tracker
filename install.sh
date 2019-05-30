@@ -7,7 +7,7 @@ sudo systemctl start mysql
 sudo systemctl enable mysql
 
 # Create virtualenv and install dependencies
-virtualenv nptenv
+virtualenv -p python3 nptenv
 source nptenv/bin/activate
 pip install -r requirements.txt
 cp app-env-example app-env
