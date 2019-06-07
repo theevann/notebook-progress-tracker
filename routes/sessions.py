@@ -10,8 +10,7 @@ sessions_bp = Blueprint('sessions', __name__)
 
 @sessions_bp.route('/sessions', methods=["GET"])
 def show_sessions():
-    fields=[('ID', 'id'), ('Name', 'name'), ('Owner', 'owner'), ('Creation Date', 'f_creation_date'), ('Status', 'open')]
-    return render_template("sessions.html", sessions=Session.query.order_by(Session.id).all(), fields=fields)
+    return render_template("sessions.html")
 
 
 @sessions_bp.route('/get-sessions', methods=["GET"])
