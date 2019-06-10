@@ -1,0 +1,17 @@
+# Dump and Load
+
+sudo mysqldump --no-create-info npt > dump_file.sql                                                                                   courdier@iccluster045a
+sudo mysql npt < dump_file.sql
+
+# Remove tables or all rows in table
+
+USE npt;
+
+SELECT * FROM sessions;
+SELECT * FROM records;
+
+DELETE FROM records;
+DELETE FROM sessions;
+
+DROP TABLE records;
+DROP TABLE sessions;
