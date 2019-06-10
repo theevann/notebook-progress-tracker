@@ -1,0 +1,64 @@
+{% extends "default.html" %}
+{% set active_page = "index" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css">
+    <title>Index</title>
+{% endblock %}
+
+
+{% block content %}
+
+        <div class="container text-center" style='font-size:1.3em'>
+            <h1 style="padding-bottom:20px">Welcome to the Notebook Progress Tracker</h1>
+            This website allows to track the progress of students running notebooks.
+            <br>
+            It can be useful during exercice sessions or tutorials using notebooks to know if your audience is following,
+            and if they are able to get to the expected result.
+
+            <h3 style="padding-top:40px;padding-bottom:20px">How it works</h3>
+            Inside your notebooks, you simply send the data that you want to track.
+            <br>
+            On the website, you can see the data that people send from their notebooks.
+
+            <h3 style="padding-top:40px;padding-bottom:20px">How to use</h3>
+            First, sign up <a href="/signup">here</a>.
+            <br>
+            Under the <a href="/sessions">sessions tab</a>, create a new session and check its session id.
+            <br>
+            Inside your notebooks, paste the following code at the beginnin:
+            <div class="row text-left justify-content-center" style="margin-top:20px;">
+                <pre style="width:60%"><code data-language="python">import requests
+
+exec(requests.get("https://courdier.pythonanywhere.com/get-send-code").content)
+
+name = input("Name:")
+session = input('Session Id:')</code></ore>
+            </div>
+            When you will run this cell, you need to provide the id of the session previously created.
+            <br>
+            <br>
+            Then later in the code you can send variables of different types (string, numpy array, plot) using the 'send' function
+            that takes as first argument the element to send and as second argument the question number.
+            <div class="row text-left justify-content-center" style="margin-top:20px;">
+                <pre style="width:60%"><code data-language="python">result = "A string"
+send(result, 1)
+
+import numpy as np
+result = np.random.randint(0, 10, size=9).reshape(3,3)
+send(result, 2)
+
+import matplotlib.pyplot as plt
+plt.plot(np.arange(10), np.random.rand(10))
+plt.title("My plot")
+send(plt, 3);</code></ore>
+            </div>
+        </div>
+
+    {{ super() }}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/rainbow.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/language/generic.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/language/python.js"></script>
+{% endblock %}
