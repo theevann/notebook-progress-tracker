@@ -8,12 +8,13 @@ from models import Session, Record
 
 from sqlalchemy import func
 from flask import Blueprint, render_template, request, redirect, url_for, make_response, jsonify
-
+from flask_login import login_required
 
 records_bp = Blueprint('records', __name__)
 
 
 @records_bp.route('/records', methods=["GET"])
+@login_required
 def show_records():
     fields=[('Session ID', 'session_id'), ('Name', 'sender_name'), ('Date', 'f_time'), ('Question number', 'question_nb'), ('Answer', 'f_data')]
     records = db.session.query(Record)
@@ -32,6 +33,7 @@ def show_records():
 
 
 @records_bp.route('/get-records', methods=["GET"])
+@login_required
 def get_records():
     all_records = Record.query.all()
     dict_records = [s.to_dict() for s in all_records]
@@ -39,6 +41,7 @@ def get_records():
 
 
 @records_bp.route('/add-record', methods=["POST"])
+@login_required
 def add_record():
     # import pdb; pdb.set_trace();
     required_keys = ['session_id', 'sender_name', 'question_nb', 'type']
@@ -92,6 +95,7 @@ def add_record():
 
 
 @records_bp.route('/rec-count', methods=["GET"])
+@login_required
 def get_record_count_per_question():
     sid = request.args.get('sid', None, type=int)
     if sid is None:

@@ -1,0 +1,37 @@
+{% extends "default.html" %}
+{% set active_page = "login" %}
+
+{% block head %}
+    {{ super() }}
+    <title>Login</title>
+{% endblock %}
+
+
+{% block content %}
+
+        <div class="container" style='font-size:1.3em'>
+            {% if error %}
+            <div class="alert alert-warning text-center" role="alert">
+                Incorrect username or password
+            </div>
+            {% endif %}
+            <div class="row justify-content-center">
+                <form action="/login" method="POST">
+                  <div class="form-group mr-3">
+                    <label for="username">Username:</label>
+                    <input class="form-control" id="username" name="username" placeholder="Enter your username">
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+                  </div>
+                  <div class="text-center">
+                      <button type="submit" class="btn btn-success">Log in</button>
+                  </div>
+                </form>
+            </div>
+        </div>
+
+    {{ super() }}
+
+{% endblock %}

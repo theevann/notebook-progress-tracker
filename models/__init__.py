@@ -4,10 +4,11 @@ from dotenv import load_dotenv
 from .base import db
 from .record import Record
 from .session import Session
+from .user import User
 
 
 project_folder = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(project_folder, '../app-env'))
+load_dotenv(os.path.join(project_folder, os.pardir, 'app-env'))
 
 SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
     username=os.getenv("DB_USERNAME"),

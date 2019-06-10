@@ -1,10 +1,19 @@
-{% set navigation_bar = {
-    'sessions': ('/sessions', 'Sessions', 'All Sessions'),
-    'records': ("/records", 'Records', 'All Records'),
-    'dashboard': ("/dashboard", 'Dashboard', 'Dashboard')
-} -%}
+{% if current_user.is_authenticated %}
+    {% set navigation_bar = {
+        'index': ('/', 'Index', 'NPT'),
+        'sessions': ('/sessions', 'Sessions', 'All Sessions'),
+        'records': ('/records', 'Records', 'All Records'),
+        'dashboard': ('/dashboard', 'Dashboard', 'Dashboard'),
+        'logout': ('/logout', 'Logout', 'Logout'),
+    } -%}
+{% else %}
+    {% set navigation_bar = {
+        'index': ('/', 'Index', 'NPT'),
+        'login': ('/login', 'Login', 'Login'),
+    } -%}
+{% endif %}
 
-{% set active_page = active_page|default('sessions') -%}
+{% set active_page = active_page|default('index') -%}
 
 <html>
     <head>

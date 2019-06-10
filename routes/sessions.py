@@ -3,17 +3,19 @@ from models import Session, Record
 
 from sqlalchemy import func
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
-
+from flask_login import login_required
 
 sessions_bp = Blueprint('sessions', __name__)
 
 
 @sessions_bp.route('/sessions', methods=["GET"])
+@login_required
 def show_sessions():
     return render_template("sessions.html")
 
 
 @sessions_bp.route('/get-sessions', methods=["GET"])
+@login_required
 def get_sessions():
     all_sessions = Session.query.order_by(Session.id).all()
     dict_sessions = [s.to_dict() for s in all_sessions]
@@ -21,6 +23,7 @@ def get_sessions():
 
 
 @sessions_bp.route("/add-session", methods=["POST"])
+@login_required
 def add_session():
     data = request.form
     register_session(data['owner'], data['name'], data['description'])
@@ -28,6 +31,7 @@ def add_session():
 
 
 @sessions_bp.route("/del-session", methods=["GET"])
+@login_required
 def del_session():
     if 'id' in request.args:
         sid = int(request.args['id'])
@@ -36,6 +40,7 @@ def del_session():
 
 
 @sessions_bp.route("/toggle-session", methods=["GET"])
+@login_required
 def toggle_session():
     if 'id' in request.args:
         sid = int(request.args['id'])
