@@ -25,7 +25,7 @@ class Record(db.Model):
     type = db.Column(db.String(20))
     data = db.Column(db.BLOB)
 
-    session = relationship("Session", back_populates="records")
+    session = relationship("Session", foreign_keys=session_id, back_populates="records")
 
     def to_dict(self):
         fields = ['id', 'session_id', 'sender_name', 'sender_ip', 'question_nb', 'f_time', 'type', 'f_data']

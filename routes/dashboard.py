@@ -1,7 +1,7 @@
 from models import Session
 
 from flask import Blueprint, render_template, request
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -10,4 +10,5 @@ dashboard_bp = Blueprint('dashboard', __name__)
 @login_required
 def get_bar():
     sid = request.args.get('id', None)
-    return render_template("bar_graph.html", sid=sid, sessions=Session.query.order_by(Session.id).all(), fields=Session.columns())
+    sessions = Session.query.filter_by(owner=current_user).order_by(Session.id).all()
+    return render_template("bar_graph.html", sid=sid, sessions=sessions)
