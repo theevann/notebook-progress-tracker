@@ -17,8 +17,8 @@ class SessionList extends React.Component {
     }
 
     render() {
-        let names = ['ID', 'Name', 'Owner', 'Creation Date', 'Status'];
-        let fields = ['id', 'name', 'owner', 'f_creation_date'];
+        let names = ['ID', 'Name', 'Description', 'Creation Date', 'Status'];
+        let fields = ['id', 'name', 'description', 'f_creation_date'];
 
         return [
             <SessionHeader key="header" names={names} />,

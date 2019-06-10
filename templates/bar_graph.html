@@ -18,7 +18,7 @@
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             {% for session in sessions %}
-                <a class="dropdown-item" href="#" onclick="load_data({{ session['id'] }})">{{ session.id }} - {{ session.name }} ({{ session.owner }})  </a>
+                <a class="dropdown-item" href="#" onclick="load_data({{ session['id'] }})">{{ session.id }} - {{ session.name }} ({{ session.f_owner }})  </a>
             {% endfor %}
           </div>
         </div>
