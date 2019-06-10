@@ -30,7 +30,7 @@ class SessionList extends React.Component {
 class SessionHeader extends React.Component {
     render() {
         return (
-            React.createElement("div", {className: "row header"}, 
+            React.createElement("div", {className: "row header row-session"}, 
                 this.props.names.map(name =>
                     React.createElement("div", {key: name, className: "col-sm"}, name)
                 ), 
@@ -60,7 +60,7 @@ class SessionRow extends React.Component {
     render() {
         let session = this.props.session;
         return (
-            React.createElement("div", {key: "fields", className: "row"}, 
+            React.createElement("div", {key: "fields", className: "row row-session"}, 
                 this.props.fields.map(field =>
                     React.createElement("div", {key: field, className: "col-sm"}, session[field])
                 ), 

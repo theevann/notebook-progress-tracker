@@ -85,7 +85,7 @@ class RecordsSearchbar extends React.Component {
     render() {
         let fields = [['Session ID', 'session_id'], ['Name', 'sender_name'], ['Date', 'f_time'], ['Question nb', 'question_nb']]
         return (
-            React.createElement("div", {className: "row search"}, 
+            React.createElement("div", {className: "row search row-record"}, 
                 fields.map(([name, field]) =>
                     React.createElement("div", {key: name, className: "col-sm-2"}, 
                         React.createElement("input", {type: "text", name: field, placeholder: name, style: { 'width': '100%'}, onChange: this.handleFilterTextChange.bind(this)})
@@ -104,7 +104,7 @@ class RecordsHeader extends React.Component {
     render() {
         let names = ['Session ID', 'Name', 'Date', 'Question number'];
         return (
-            React.createElement("div", {className: "row header"}, 
+            React.createElement("div", {className: "row header row-record"}, 
                 names.map(name =>
                     React.createElement("div", {key: name, className: "col-sm"}, name)
                 ), 
@@ -127,7 +127,7 @@ class RecordsRow extends React.Component {
             data = data.split('\n').map((text, key) => React.createElement("span", {key: key}, text, React.createElement("br", null)));
 
         return (
-            React.createElement("div", {key: "fields", className: "row"}, 
+            React.createElement("div", {key: "fields", className: "row row-record"}, 
                 fields.map(field =>
                     React.createElement("div", {key: field, className: "col-sm"}, 
                         React.createElement("p", null, record[field])

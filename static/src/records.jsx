@@ -86,7 +86,7 @@ class RecordsSearchbar extends React.Component {
     render() {
         let fields = [['Session ID', 'session_id'], ['Name', 'sender_name'], ['Date', 'f_time'], ['Question nb', 'question_nb']]
         return (
-            <div className="row search">
+            <div className="row search row-record">
                 {fields.map(([name, field]) =>
                     <div key={name} className='col-sm-2'>
                         <input type="text" name={field} placeholder={name} style={{ 'width': '100%' }} onChange={this.handleFilterTextChange.bind(this)}></input>
@@ -105,7 +105,7 @@ class RecordsHeader extends React.Component {
     render() {
         let names = ['Session ID', 'Name', 'Date', 'Question number'];
         return (
-            <div className="row header">
+            <div className="row header row-record">
                 {names.map(name =>
                     <div key={name} className='col-sm'>{name}</div>
                 )}
@@ -128,7 +128,7 @@ class RecordsRow extends React.Component {
             data = data.split('\n').map((text, key) => <span key={key}>{text}<br/></span>);
 
         return (
-            <div key="fields" className="row">
+            <div key="fields" className="row row-record">
                 {fields.map(field =>
                     <div key={field} className='col-sm'>
                         <p>{record[field]}</p>
