@@ -15,6 +15,7 @@ class Session(db.Model):
 
     id = db.Column(db.Integer, unique=True)
     name = db.Column(db.String(100))
+    description = db.Column(db.String(300))
     owner = db.Column(db.String(100))
     creation_date = db.Column(db.DateTime, default=datetime.now)
     open = db.Column(db.Boolean, default=True)
@@ -22,7 +23,7 @@ class Session(db.Model):
     records = relationship("Record", back_populates="session")
 
     def to_dict(self):
-        fields = ['id', 'name', 'owner', 'f_creation_date', 'open']
+        fields = ['id', 'name', 'description', 'owner', 'f_creation_date', 'open']
         return {f: getattr(self, f) for f in fields}
 
     @classmethod

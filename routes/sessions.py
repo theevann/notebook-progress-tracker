@@ -23,7 +23,7 @@ def get_sessions():
 @sessions_bp.route("/add-session", methods=["POST"])
 def add_session():
     data = request.form
-    register_session(data['owner'], data['name'])
+    register_session(data['owner'], data['name'], data['description'])
     return redirect(url_for('sessions.show_sessions'))
 
 
@@ -43,15 +43,15 @@ def toggle_session():
     return redirect(url_for('sessions.show_sessions'))
 
 
-def register_session(owner, name):
+def register_session(owner, name, description=""):
     if owner == '' or name == '':
         return False
 
-    if db.session.query(Session.id).filter(Session.owner==owner, Session.name==name).first():
+    if db.session.query(Session.id).filter(Session.owner == owner, Session.name == name).first():
         return False
 
     sid = (db.session.query(func.max(Session.id)).scalar() or 0) + 1
-    session = Session(id=sid, name=name, owner=owner)
+    session = Session(id=sid, name=name, owner=owner, description=description)
     db.session.add(session)
     db.session.commit()
     return True
