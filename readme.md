@@ -1,3 +1,9 @@
+Utility to track live progress of an audience using python notebook.
+
+# Use
+
+Check it online: https://courdier.pythonanywhere.com/
+
 # Installation
 
 ## Automatic
