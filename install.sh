@@ -14,7 +14,8 @@ cp app-env-example app-env
 
 # Create the database, the user and the tables
 sudo mysql -u root < create_db.sql
-python make_db.py
+export FLASK_APP=flask_app.py
+flask db upgrade
 
 
 

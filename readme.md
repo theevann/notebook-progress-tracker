@@ -30,7 +30,8 @@ pip install -r requirements.txt
 ```sh
 cp app-env-example app-env
 sudo mysql -u root < create_db.sql
-python make_db.py
+export FLASK_APP=flask_app.py
+flask db upgrade
 ```
 
 # Running the server
