@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_migrate import Migrate
 
 import routes
 import models
@@ -27,6 +28,8 @@ def create_app():
 
 
 app = create_app()
+migrate = Migrate(app, models.db)
+
 
 if __name__ == "__main__":
     print("======================== START ==========================")
