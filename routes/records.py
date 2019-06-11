@@ -22,7 +22,7 @@ def show_records():
 @records_bp.route('/get-records', methods=["GET"])
 @login_required
 def get_records():
-    all_records = Record.query.join(Session, User).filter(User.id == current_user.id).all()
+    all_records = Record.query.join(Session).filter_by(owner_id=current_user.id).all()
     dict_records = [s.to_dict() for s in all_records]
     return jsonify(dict_records)
 
@@ -89,7 +89,7 @@ def get_record_count_per_question():
     sid = request.args.get('sid', None, type=int)
     if sid is None:
         return "Error: Missing sid", 400
-    elif not db.session.query(Session.id).filter_by(id=sid).first():
+    elif not db.session.query(Session.id).filter_by(id=sid, owner_id=current_user.id).first():
         return "Error: No such session", 400
 
     query = db.session.query(Record.question_nb, func.count('*').label('record_count')).filter_by(session_id=sid).group_by(Record.question_nb).all()

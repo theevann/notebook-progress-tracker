@@ -60,18 +60,21 @@ def register_session(name, description=""):
 
 
 def delete_session(sid):
+    session = Session.query.filter_by(id=sid, owner=current_user)
+    if not session.first():
+        return False
     Record.query.filter_by(session_id=sid).delete()
-    Session.query.filter_by(id=sid).delete()
+    session.delete()
     db.session.commit()
     return True
 
 
 def toggle_session_state(sid):
-    session = Session.query.filter_by(id=sid).first()
+    session = Session.query.filter_by(id=sid, owner=current_user).first()
     if not session:
         return False
     if not session.open:
-        for s in Session.query.filter(Session.owner == current_user, Session.name == session.name).all():
+        for s in Session.query.filter_by(owner=current_user, name=session.name).all():
             s.open = False
     session.open = not session.open
     db.session.commit()
