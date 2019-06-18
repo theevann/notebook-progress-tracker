@@ -60,7 +60,7 @@ class RecordsList extends React.Component {
 
         return [
             React.createElement(RecordsHeader, {key: "header"}),
-            React.createElement(RecordsSearchbar, {key: "searchbar", clearFilters: this.clearFilters.bind(this), onFilterChange: this.onFilterChange.bind(this)}),
+            React.createElement(RecordsSearchbar, {key: "searchbar", update: this.update.bind(this), clearFilters: this.clearFilters.bind(this), onFilterChange: this.onFilterChange.bind(this)}),
             records
         ];
     }
@@ -92,7 +92,8 @@ class RecordsSearchbar extends React.Component {
                     )
                 ), 
                 React.createElement("div", {className: "col-sm-4"}, 
-                    React.createElement("button", {onClick: this.clearFilters.bind(this), className: "btn btn-secondary"}, "Clear Filters")
+                    React.createElement("button", {onClick: this.clearFilters.bind(this), className: "btn btn-secondary"}, "Clear Filters"), 
+                    React.createElement("button", {onClick: this.props.update, className: "btn btn-secondary"}, "Reload")
                 )
             )
         );

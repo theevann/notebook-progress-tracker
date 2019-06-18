@@ -61,7 +61,7 @@ class RecordsList extends React.Component {
 
         return [
             <RecordsHeader key="header" />,
-            <RecordsSearchbar key="searchbar" clearFilters={this.clearFilters.bind(this)} onFilterChange={this.onFilterChange.bind(this)} />,
+            <RecordsSearchbar key="searchbar" update={this.update.bind(this)} clearFilters={this.clearFilters.bind(this)} onFilterChange={this.onFilterChange.bind(this)} />,
             records
         ];
     }
@@ -94,6 +94,7 @@ class RecordsSearchbar extends React.Component {
                 )}
                 <div className='col-sm-4'>
                     <button onClick={this.clearFilters.bind(this)} className='btn btn-secondary'>Clear Filters</button>
+                    <button onClick={this.props.update} className='btn btn-secondary'>Reload</button>
                 </div>
             </div>
         );
