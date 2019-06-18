@@ -49,6 +49,8 @@ def add_record():
         data = np.array(json.loads(record['data'])).dumps()
     elif record['type'] == "str":
         data = str.encode(record['data'])
+    elif record['type'] == "function":
+        data = str.encode(record['data'])
     elif record['type'] == "image":
         buffer = io.BytesIO()
         file.save(buffer)

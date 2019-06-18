@@ -10,6 +10,7 @@ def get_send_code():
 import io
 import json
 import requests
+import inspect
 
 def get_binary_image(plt_obj):
     with io.BytesIO() as buffer:
@@ -25,6 +26,9 @@ def send(data, q_nb):
     if datatype == "ndarray":
         form['type'] = datatype
         form['data'] = json.dumps(data.tolist())
+    elif datatype == "function":
+        form['type'] = datatype
+        form['data'] = inspect.getsource(data)
     elif datatype == "module" and data.__name__ == "matplotlib.pyplot":
         form['type'] = 'image'
         file['file'] = get_binary_image(data)

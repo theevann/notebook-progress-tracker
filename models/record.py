@@ -37,6 +37,8 @@ class Record(db.Model):
             data = format_array(np.load(io.BytesIO(self.data), allow_pickle=True))
         elif self.type == 'str':
             data = self.data.decode('utf-8')
+        elif self.type == 'function':
+            data = self.data.decode('utf-8')
         elif self.type == 'image':
             data = b64encode(self.data).decode()
         return data
