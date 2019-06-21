@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request
 
 
 sendcode_bp = Blueprint('sendcode', __name__)
@@ -18,18 +18,18 @@ def get_binary_image(plt_obj):
         return buffer.getvalue()
 
 def send(data, q_nb):
-    url = "http://courdier.pythonanywhere.com/add-record"
-    file = {}
-    form = {'session_id': session, 'sender_name': name, 'question_nb': q_nb}
+    url = '{0}add-record'
+    file = {{}}
+    form = {{'session_id': session, 'sender_name': name, 'question_nb': q_nb}}
 
     datatype = type(data).__name__
-    if datatype == "ndarray":
+    if datatype == 'ndarray':
         form['type'] = datatype
         form['data'] = json.dumps(data.tolist())
-    elif datatype == "function":
+    elif datatype == 'function':
         form['type'] = datatype
         form['data'] = inspect.getsource(data)
-    elif datatype == "module" and data.__name__ == "matplotlib.pyplot":
+    elif datatype == 'module' and data.__name__ == 'matplotlib.pyplot':
         form['type'] = 'image'
         file['file'] = get_binary_image(data)
     else:
@@ -39,4 +39,4 @@ def send(data, q_nb):
     response = requests.post(url, data=form, files=file)
     print(response.content.decode())
     return response
-        """
+""".format(request.url_root)
