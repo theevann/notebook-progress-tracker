@@ -33,13 +33,14 @@
 
 exec(requests.get("https://courdier.pythonanywhere.com/get-send-code").content)
 
-name = input("Name:")
-session = input('Session Id:')</code></pre>
+owner = "your-username-here"
+session = "your-session-name-here"
+name = input("Name:")</code></pre>
             </div>
-            When you will run this cell, you need to provide the id of the session previously created.
+            In this cell, you need to provide the name of the session previously created, as well as your username.
             <br>
             <br>
-            Then later in the code you can send variables of different types (string, numpy array, plot) using the 'send' function
+            Then later in the code you can send variables of different types (string, numpy array, plot, functions) using the 'send' function
             that takes as first argument the element to send and as second argument the question number.
             <div class="row text-left justify-content-center" style="margin-top:20px;">
                 <pre style="width:60%"><code data-language="python">result = "A string"
@@ -52,7 +53,11 @@ send(result, 2)
 import matplotlib.pyplot as plt
 plt.plot(np.arange(10), np.random.rand(10))
 plt.title("My plot")
-send(plt, 3);</code></pre>
+send(plt, 3);
+
+def func(a, b):
+    return a + b
+send(func, 4);</code></pre>
             </div>
         </div>
 
