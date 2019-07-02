@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from .base import db
 from .record import Record
 from .session import Session
+from .session_part import SessionPart
 from .user import User
 
 

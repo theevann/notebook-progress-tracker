@@ -18,6 +18,7 @@ class Record(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
+    part_id = db.Column(db.Integer, db.ForeignKey('session_parts.id'))
     sender_name = db.Column(db.String(100))
     sender_ip = db.Column(db.String(15))
     question_nb = db.Column(db.Integer)
@@ -26,6 +27,7 @@ class Record(db.Model):
     data = db.Column(db.BLOB)
 
     session = relationship("Session", foreign_keys=session_id, back_populates="records")
+    part = relationship("SessionPart", foreign_keys=part_id, back_populates="records")
 
     def to_dict(self):
         fields = ['id', 'session_id', 'sender_name', 'sender_ip', 'question_nb', 'f_time', 'type', 'f_data']

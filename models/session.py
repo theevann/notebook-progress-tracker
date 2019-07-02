@@ -21,6 +21,7 @@ class Session(db.Model):
 
     owner = relationship("User", foreign_keys=owner_id, back_populates="sessions")
     records = relationship("Record", back_populates="session")
+    parts = relationship("SessionPart", back_populates="session")
 
     def to_dict(self):
         fields = ['id', 'name', 'description', 'f_owner', 'f_creation_date', 'open']
