@@ -23,7 +23,10 @@ def send(data, q_nb):
     form = {{'owner': owner, 'session_name': session, 'sender_name': name, 'question_nb': q_nb}}
 
     datatype = type(data).__name__
-    if datatype == 'ndarray':
+    if datatype in ["int", "float"]:
+        form['type'] = "ndarray"
+        form['data'] = json.dumps([data])
+    elif datatype == "ndarray":
         form['type'] = datatype
         form['data'] = json.dumps(data.tolist())
     elif datatype == 'function':
