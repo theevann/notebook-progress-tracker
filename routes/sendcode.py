@@ -18,10 +18,18 @@ def get_binary_image(plt_obj):
         return buffer.getvalue()
 
 def send(data, q_nb):
+    if 'npt_config' not in globals():
+        print('Variable npt_config is not defined')
+        return
+
     url = '{0}add-record'
     file = {{}}
-    form = {{'question_nb': q_nb}}
-    form.update(npt_config)
+    form = {{
+        'question_nb': q_nb,
+        'session_name': npt_config.get('session_name'),
+        'session_owner': npt_config.get('session_owner'),
+        'sender_name': npt_config.get('sender_name')
+    }}
 
     datatype = type(data).__name__
     if datatype in ["int", "float"]:
@@ -41,6 +49,8 @@ def send(data, q_nb):
         form['data'] = data
 
     response = requests.post(url, data=form, files=file)
-    print(response.content.decode())
+
+    if npt_config.get('log', False):
+        print(response.content.decode())
     return response
 """.format(request.url_root)
