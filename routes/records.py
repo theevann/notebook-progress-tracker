@@ -32,14 +32,14 @@ def get_records():
 @records_bp.route('/add-record', methods=["POST"])
 def add_record():
     # import pdb; pdb.set_trace();
-    required_keys = ['owner', 'session_name', 'sender_name', 'question_nb', 'type']
+    required_keys = ['session_owner', 'session_name', 'sender_name', 'question_nb', 'type']
     record = request.form
     file = request.files.get('file', None)
 
     if any(key not in record for key in required_keys):
         return "Error: Missing key", 400
 
-    user = load_user(record['owner'])
+    user = load_user(record['session_owner'])
     if not user:
         return "Error: No such owner", 400
 

@@ -33,9 +33,12 @@
 
 exec(requests.get("https://courdier.pythonanywhere.com/get-send-code").content)
 
-owner = "your-username-here"
-session = "your-session-name-here"
-name = input("Name:")</code></pre>
+npt_config = {
+    'session_name': 'your-session-name-here',
+    'session_owner': 'your-username-here',
+}
+
+npt_config['sender_name'] = input("Name:")</code></pre>
             </div>
             In this cell, you need to provide the name of the session previously created, as well as your username.
             <br>

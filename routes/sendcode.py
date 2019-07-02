@@ -20,7 +20,8 @@ def get_binary_image(plt_obj):
 def send(data, q_nb):
     url = '{0}add-record'
     file = {{}}
-    form = {{'owner': owner, 'session_name': session, 'sender_name': name, 'question_nb': q_nb}}
+    form = {{'question_nb': q_nb}}
+    form.update(npt_config)
 
     datatype = type(data).__name__
     if datatype in ["int", "float"]:
