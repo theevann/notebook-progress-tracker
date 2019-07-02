@@ -15,11 +15,12 @@ class RecordsList extends React.Component {
     }
 
     componentDidMount() {
-      this.update();
+        this.update();
     }
 
     componentDidUpdate(prevProps, prevState) {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        Rainbow.color();
     }
 
     update() {
@@ -52,11 +53,9 @@ class RecordsList extends React.Component {
             try {
                 if (!Object.keys(filters).every(key => record[key].toString().match(new RegExp(filters[key], "i")) ))
                     return;
-                records.push(<RecordsRow key={record.id} record={record} update={this.update.bind(this)} />);
-            } catch (e) {
-                records.push(<RecordsRow key={record.id} record={record} update={this.update.bind(this)} />);
-            }
+            } finally {}
 
+            records.push(<RecordsRow key={`${record.id}-${record.f_time}`} record={record} update={this.update.bind(this)} />);
         })
 
         return [
@@ -123,20 +122,25 @@ class RecordsRow extends React.Component {
         let fields = ['session_id', 'sender_name', 'f_time', 'question_nb'];
         let data = record.f_data;
 
-        if (record.type == 'image')
+        if (record.type == 'image') {
             data = <img className="image" src={`data:;base64,${data}`} style={{ 'maxWidth': '100%', 'maxHeight':'100%' }} />;
-        else if (record.type == 'ndarray' && !data.startsWith("\\begin"))
+        } else if (record.type == 'ndarray' && !data.startsWith("\\begin")) {
             data = data.split('\n').map((text, key) => <span key={key}>{text}<br/></span>);
+        } else if (record.type == 'function') {
+            data = <pre><code className="" data-language="python">{data}</code></pre>
+        } else {
+            data = <p>{data}</p>
+        }
 
         return (
-            <div key="fields" className="row row-record">
+            <div className="row row-record">
                 {fields.map(field =>
                     <div key={field} className='col-sm'>
                         <p>{record[field]}</p>
                     </div>
                 )}
                 <div className='col-sm-4'>
-                    <p>{data}</p>
+                    {data}
                 </div>
             </div>
         );

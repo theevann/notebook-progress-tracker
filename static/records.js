@@ -14,11 +14,13 @@ class RecordsList extends React.Component {
     }
 
     componentDidMount() {
-      this.update();
+        this.update();
     }
 
     componentDidUpdate(prevProps, prevState) {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        // jQuery("code.rerender").removeClass('rainbow rerender');
+        Rainbow.color();
     }
 
     update() {
@@ -51,11 +53,9 @@ class RecordsList extends React.Component {
             try {
                 if (!Object.keys(filters).every(key => record[key].toString().match(new RegExp(filters[key], "i")) ))
                     return;
-                records.push(React.createElement(RecordsRow, {key: record.id, record: record, update: this.update.bind(this)}));
-            } catch (e) {
-                records.push(React.createElement(RecordsRow, {key: record.id, record: record, update: this.update.bind(this)}));
-            }
+            } finally {}
 
+            records.push(React.createElement(RecordsRow, {key: `${record.id}-${record.f_time}`, record: record, update: this.update.bind(this)}));
         })
 
         return [
@@ -122,20 +122,25 @@ class RecordsRow extends React.Component {
         let fields = ['session_id', 'sender_name', 'f_time', 'question_nb'];
         let data = record.f_data;
 
-        if (record.type == 'image')
+        if (record.type == 'image') {
             data = React.createElement("img", {className: "image", src: `data:;base64,${data}`, style: { 'maxWidth': '100%', 'maxHeight':'100%'}});
-        else if (record.type == 'ndarray' && !data.startsWith("\\begin"))
+        } else if (record.type == 'ndarray' && !data.startsWith("\\begin")) {
             data = data.split('\n').map((text, key) => React.createElement("span", {key: key}, text, React.createElement("br", null)));
+        } else if (record.type == 'function') {
+            data = React.createElement("pre", null, React.createElement("code", {className: "", "data-language": "python"}, data))
+        } else {
+            data = React.createElement("p", null, data)
+        }
 
         return (
-            React.createElement("div", {key: "fields", className: "row row-record"}, 
+            React.createElement("div", {className: "row row-record"}, 
                 fields.map(field =>
                     React.createElement("div", {key: field, className: "col-sm"}, 
                         React.createElement("p", null, record[field])
                     )
                 ), 
                 React.createElement("div", {className: "col-sm-4"}, 
-                    React.createElement("p", null, data)
+                    data
                 )
             )
         );
