@@ -33,10 +33,10 @@ class SessionHeader extends React.Component {
         return (
             <div className="row header row-session">
                 {this.props.names.map(name =>
-                    <div key={name} className='col-sm'>{name}</div>
+                    <div key={name} className='col-sm col-session'>{name}</div>
                 )}
-                <div className="col-sm-1">
-                    Delete
+                <div className="col-sm-1 col-session">
+                    Edit
                 </div>
             </div>
         );
@@ -50,8 +50,8 @@ class SessionRow extends React.Component {
         this.state = { };
     }
 
-    delete_session() {
-        $.get("/del-session?id=" + this.props.session.id, this.props.update);
+    edit_session() {
+        window.location = "/sessions/" + this.props.session.id;
     }
 
     toggle_session_state() {
@@ -63,14 +63,14 @@ class SessionRow extends React.Component {
         return (
             <div key="fields" className="row row-session">
                 {this.props.fields.map(field =>
-                    <div key={field} className='col-sm'>{session[field]}</div>
+                    <div key={field} className='col-sm col-session'>{session[field]}</div>
                 )}
-                <div className="col-sm cliquable" onClick={() => this.toggle_session_state()}>
+                <div className="col-sm cliquable col-session" onClick={() => this.toggle_session_state()}>
                     { session.open ? "Open" : "Closed" }
                     <i className={"fa fa-toggle-" + (session.open ? "on" : "off") } style={{"fontSize": "24px"}}></i>
                 </div>
-                <div className="col-sm-1 cliquable" onClick={() => this.delete_session()}>
-                    <i className="fa fa-trash"></i>
+                <div className="col-sm-1 cliquable col-session" onClick={() => this.edit_session()}>
+                    <a href="#" class="btn btn-primary btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
                 </div>
             </div>
         );

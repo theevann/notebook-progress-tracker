@@ -17,8 +17,11 @@ sudo mysql -u root < create_db.sql
 export FLASK_APP=flask_app.py
 flask db upgrade
 
+npm i react react-dom react-bootstrap bootstrap
+npm install --save-dev @babel/core @babel/cli
+npm install --save-dev @babel/preset-react
 
-
+./node_modules/.bin/babel --presets @babel/preset-react --watch static/src --out-dir static/
 
 ## If needed to set root pwd for my SQL
 

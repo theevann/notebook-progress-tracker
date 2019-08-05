@@ -87,11 +87,11 @@ class RecordsSearchbar extends React.Component {
         return (
             <div className="row search row-record">
                 {fields.map(([name, field]) =>
-                    <div key={name} className='col-sm-2'>
+                    <div key={name} className='col-sm-2 col-record'>
                         <input type="text" name={field} placeholder={name} style={{ 'width': '100%' }} onChange={this.handleFilterTextChange.bind(this)}></input>
                     </div>
                 )}
-                <div className='col-sm-4'>
+                <div className='col-sm-4 col-record'>
                     <button onClick={this.clearFilters.bind(this)} className='btn btn-secondary'>Clear Filters</button>
                     <button onClick={this.props.update} className='btn btn-secondary'>Reload</button>
                 </div>
@@ -107,9 +107,9 @@ class RecordsHeader extends React.Component {
         return (
             <div className="row header row-record">
                 {names.map(name =>
-                    <div key={name} className='col-sm'>{name}</div>
+                    <div key={name} className='col-sm col-record'>{name}</div>
                 )}
-                <div className='col-sm-4'>Answer</div>
+                <div className='col-sm-4 col-record'>Answer</div>
             </div>
         );
     }
@@ -135,11 +135,11 @@ class RecordsRow extends React.Component {
         return (
             <div className="row row-record">
                 {fields.map(field =>
-                    <div key={field} className='col-sm'>
+                    <div key={field} className='col-sm col-record'>
                         <p>{record[field]}</p>
                     </div>
                 )}
-                <div className='col-sm-4'>
+                <div className='col-sm-4 col-record'>
                     {data}
                 </div>
             </div>

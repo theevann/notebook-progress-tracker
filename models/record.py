@@ -22,6 +22,7 @@ class Record(db.Model):
     sender_name = db.Column(db.String(100))
     sender_ip = db.Column(db.String(15))
     question_nb = db.Column(db.Integer)
+    # question_name = db.Column(db.String(100))
     time = db.Column(db.DateTime, default=datetime.now)
     type = db.Column(db.String(20))
     data = db.Column(db.BLOB)
@@ -30,6 +31,7 @@ class Record(db.Model):
     part = relationship("SessionPart", foreign_keys=part_id, back_populates="records")
 
     def to_dict(self):
+        # fields = ['id', 'session_id', 'sender_name', 'sender_ip', 'question_nb', 'question_name', 'f_time', 'type', 'f_data']
         fields = ['id', 'session_id', 'sender_name', 'sender_ip', 'question_nb', 'f_time', 'type', 'f_data']
         return {f: getattr(self, f) for f in fields}
 

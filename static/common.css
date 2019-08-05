@@ -7,7 +7,7 @@
     font-size: 95% !important;
 }
 
-.col-sm, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6 {
+.col-session, .col-record {
     padding-top: .75rem;
     padding-bottom: .75rem;
     background-color: rgba(86,61,124,.15);

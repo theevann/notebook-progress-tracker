@@ -7,9 +7,9 @@ class SessionPart(db.Model):
     __tablename__ = "session_parts"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    number = db.Column(db.Integer)
-    description = db.Column(db.String(300))
+    name = db.Column(db.String(100), default="default")
+    number = db.Column(db.Integer, default=1)
+    description = db.Column(db.String(300), default="")
     session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
 
     session = relationship("Session", foreign_keys=session_id, back_populates="parts")
