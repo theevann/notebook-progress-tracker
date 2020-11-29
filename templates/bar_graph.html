@@ -35,6 +35,8 @@
         width = 0.8*document.documentElement.clientWidth - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
+    var sid = localStorage.getItem("sid");
+
     // set the ranges
     var x = d3.scaleBand()
               .range([0, width])
@@ -64,7 +66,7 @@
         d3.json("/rec-count?sid=" + sid, function(error, data) {
           if (error) throw error;
 
-          document.cookie = "sid=" + sid;
+          localStorage.setItem("sid", sid);
           d3.select('#graphtitle').text("Session " + sid);
           d3.select('#graphrefresh').style('display', 'inline-block');
           d3.select('#graphrefresh').classed('fa-spin', false);
@@ -118,34 +120,12 @@
         });
     };
 
-    let getCookie = function(c_name) {
-        var c_value = " " + document.cookie;
-        var c_start = c_value.indexOf(" " + c_name + "=");
-        if (c_start == -1) {
-            c_value = null;
-        }
-        else {
-            c_start = c_value.indexOf("=", c_start) + 1;
-            var c_end = c_value.indexOf(";", c_start);
-            if (c_end == -1) {
-                c_end = c_value.length;
-            }
-            c_value = unescape(c_value.substring(c_start,c_end));
-        }
-        return c_value;
-    }
-
     let reload_data = function() {
-        sid = getCookie("sid");
-        if (sid != null)
+        if (sid !== null)
             load_data(sid);
     }
 
-    {% if sid is not none %}
-        load_data({{ sid }});
-    {% else %}
-        reload_data();
-    {% endif %}
+    reload_data();
 
     </script>
     {{ super() }}
