@@ -16,6 +16,10 @@
     font-size: 1.2em;
 }
 
+pre {
+    text-align: left;
+}
+
 .row-session, .row-record {
     border: 1px solid rgba(86,61,124,.3);
 }
@@ -29,7 +33,7 @@ nav {
 }
 
 .cliquable{
-cursor:pointer;
+    cursor:pointer;
 }
 
 
