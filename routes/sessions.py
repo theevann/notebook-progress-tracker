@@ -71,7 +71,7 @@ def update_session():
     data = request.form
     session = Session.query.filter_by(id=data['id'], owner=current_user).first()
     if not session:
-        return 400, "No such session"
+        return "No such session", 400
         
     session.name = data['name']
     session.description = data['description']
@@ -80,24 +80,39 @@ def update_session():
         session.open = False
 
     db.session.commit()
-    return 200, "OK"
+    return "OK", 200
 
 
 @sessions_bp.route("/add-part", methods=["POST"])
 @login_required
 def add_part():
     data = request.form
-    part = SessionPart(session_id=data['session_id'], name=data['name'], description=data['description'], number=data['number'])
+    required_keys = ['session_id', 'name', 'description', 'number']
+    if set(required_keys) != set(data.keys()):
+        return "Error: Incorrect keys", 400
+
+    # Check session is owned by user
+    session = Session.query.filter_by(id=data['session_id'], owner_id=current_user.id)
+    if not session.first():
+        return "Error: Wrong ownership", 400
+
+    # Check name is not already used
+    part = SessionPart.query.filter_by(name=data['name'], session_id=data['session_id']) \
+            .join(Session).filter_by(owner_id=current_user.id)
+    if part.first():
+        return "Error: Part with name exists", 400
+
+    part = SessionPart(**data)
     db.session.add(part)
     db.session.commit()
-    return True
+    return "Part added", 200
 
 
 @sessions_bp.route("/del-part", methods=["GET"])
 @login_required
 def del_part():
-    sid = int(request.args['id'])
-    SessionPart.query.join(Session).filter(SessionPart.id == sid, Session.owner_id == current_user.id).delete()
+    pid = int(request.args['id'])
+    SessionPart.query.join(Session).filter(SessionPart.id == pid, Session.owner_id == current_user.id).delete()
     # TODO: Here add check that session still has other parts 
     db.session.commit()
     return 200, "OK"
@@ -106,6 +121,10 @@ def del_part():
 @sessions_bp.route("/update-part", methods=["POST"])
 @login_required
 def update_part():
+    # TODO:
+    session = Session.query.filter_by(id=sid, owner=current_user)
+    if not session.first():
+        return False
     part = SessionPart(session_id=session.id, name=name, description=description, number=number)
     
     db.session.add(part)
@@ -119,8 +138,8 @@ def register_session(name, description=""):
     if name == '':
         return False
 
-    open = not any(db.session.query(Session.open).filter(Session.owner == current_user, Session.name == name).all())
-    session = Session(name=name, owner=current_user, description=description, open=open)
+    is_open = not any(db.session.query(Session.open).filter(Session.owner == current_user, Session.name == name).all())
+    session = Session(name=name, owner=current_user, description=description, open=is_open)
     db.session.add(session)
     db.session.commit()
     default_part = SessionPart(session_id=session.id)
@@ -150,3 +169,8 @@ def toggle_session_state(sid):
     session.open = not session.open
     db.session.commit()
     return True
+
+
+def check_session_owner(sid):
+    # TODO: To use as decorator ?
+    return bool(Session.query.filter_by(id=sid, owner=current_user).first())
