@@ -4,7 +4,7 @@ import numpy as np
 from datetime import datetime
 
 from models.base import db
-from models import Session, Record, User
+from models import Session, SessionPart, Record, User
 
 from sqlalchemy import func
 from flask import Blueprint, render_template, request, redirect, url_for, make_response, jsonify
@@ -31,8 +31,9 @@ def get_records():
 
 @records_bp.route('/add-record', methods=["POST"])
 def add_record():
+    # TODO: remove session id from record
     # import pdb; pdb.set_trace();
-    required_keys = ['session_owner', 'session_name', 'sender_name', 'question_nb', 'type']
+    required_keys = ['session_owner', 'session_name', 'part_name', 'sender_name', 'question_nb', 'type']
     record = request.form
     file = request.files.get('file', None)
 
@@ -43,9 +44,13 @@ def add_record():
     if not user:
         return "Error: No such owner", 400
 
-    session = db.session.query(Session).filter_by(name=record['session_name'], open=True, owner=user).first()
+    session = Session.query.filter_by(name=record['session_name'], open=True, owner=user).first()
     if not session:
         return "Error: No such session open", 400
+
+    part = SessionPart.query.filter_by(name=record['part_name'], session_id=session.id).first()
+    if not part:
+        return "Error: No such part", 400
 
     if record['type'] == "ndarray":
         data = np.array(json.loads(record['data'])).dumps()
@@ -65,6 +70,7 @@ def add_record():
 
 
     existing_record = db.session.query(Record).filter(Record.session_id == session.id,
+                                                      Record.part_id == part.id,
                                                       Record.sender_name == record['sender_name'],
                                                       Record.question_nb == record['question_nb']
                                                       ).first()
@@ -76,6 +82,7 @@ def add_record():
     else:
         db.session.add(Record(
             session_id=session.id,
+            part_id=part.id,
             sender_name=record['sender_name'],
             sender_ip=request.remote_addr,
             question_nb=record['question_nb'],

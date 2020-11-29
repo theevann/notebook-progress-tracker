@@ -27,6 +27,7 @@ def send(data, q_nb):
     form = {{
         'question_nb': q_nb,
         'session_name': npt_config.get('session_name'),
+        'part_name': npt_config.get('part_name', 'default'),
         'session_owner': npt_config.get('session_owner'),
         'sender_name': npt_config.get('sender_name')
     }}
