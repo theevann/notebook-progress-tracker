@@ -24,9 +24,25 @@ def show_records():
 @records_bp.route('/get-records', methods=["GET"])
 @login_required
 def get_records():
-    all_records = Record.query.join(Session).filter_by(owner_id=current_user.id).all()
-    dict_records = [s.to_dict() for s in all_records]
+    sid = request.args.get('sid', None, type=int)
+    records = Record.query.join(Session).filter_by(owner_id=current_user.id)
+    if sid is not None:
+        records = records.filter(Session.id==sid)
+    dict_records = [s.to_dict() for s in records.all()]
     return jsonify(dict_records)
+
+
+@records_bp.route('/del-records', methods=["DELETE"])
+@login_required
+def del_records():
+    data = request.form
+    record_ids = data.getlist("record_ids[]")
+    print(record_ids)
+    records = Record.query.filter(Record.session_id == Session.id, Session.owner_id == current_user.id, Record.id.in_(record_ids));
+    print(records);
+    records.delete(synchronize_session=False)
+    db.session.commit()
+    return "OK", 200
 
 
 @records_bp.route('/add-record', methods=["POST"])
