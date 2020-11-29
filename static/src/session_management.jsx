@@ -51,7 +51,23 @@ let timeout = null;
 
 descInput.onkeyup = nameInput.onkeyup = function (e) {
     clearTimeout(timeout);
-    timeout = setTimeout(
-        () => $.post("/update-session", { id: session_id, name: nameInput.value, description: descInput.value }, (d) => console.log(d)),
-        500);
+    timeout = setTimeout(postChanges, 500);
 };
+
+window.onbeforeunload = function () {
+    if (timeout !== null)
+        postChanges();
+}
+
+function postChanges() {
+    $.ajax({
+        type: 'POST',
+        url: "/update-session",
+        data: {
+            id: session_id,
+            name: nameInput.value,
+            description: descInput.value
+        },
+        async: false
+    });
+}
