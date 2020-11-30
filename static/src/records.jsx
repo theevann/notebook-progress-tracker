@@ -110,7 +110,7 @@ class RecordsList extends React.Component {
             </div>,
             <RecordsHeader key="header" />,
             <RecordsSearchbar key="searchbar" update={this.update.bind(this)} delete={this.deleteRecords.bind(this)} clearFilters={this.clearFilters.bind(this)} onFilterChange={this.onFilterChange.bind(this)} />,
-            <div className="row" style={{ overflowY: "scroll", flex: "1 1 auto" }}>
+            <div className="row" style={{ overflowY: "scroll" }}>
             {/* <div className="row"> */}
                 <div className="col">
                     {records}
