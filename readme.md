@@ -4,7 +4,7 @@ Utility to track live progress of an audience using python notebook.
 
 Check it online: https://courdier.pythonanywhere.com/
 
-### Renumbering the notebook questions
+## Jupyter Extension for renumbering the notebook questions'
 #### Auto installer
 `bash <(curl -s https://raw.githubusercontent.com/theevann/notebook-progress-tracker/master/npt-jpt/download.sh)`
 
