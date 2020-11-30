@@ -5,11 +5,19 @@ Utility to track live progress of an audience using python notebook.
 Check it online: https://courdier.pythonanywhere.com/
 
 ### Renumbering the notebook questions
+#### Auto installer
+`bash <(curl -s https://raw.githubusercontent.com/theevann/notebook-progress-tracker/master/npt-jpt/download.sh)`
+
+#### Manually
+
+Clone this repo and `cd` into it, then:
+
+```bash
 pip install jupyter_contrib_nbextensions
 jupyter contrib nbextensions install
 jupyter nbextension install npt-jpt --user
 jupyter nbextension enable npt-jpt/main
-
+```
 
 
 # Installation
