@@ -1,0 +1,9 @@
+Type: Jupyter Notebook Extension
+Compatibility: 3.x, 4.x, 5.x, 6.x
+Name: Notebook Progress Tracker Helper
+Main: main.js
+Link: README.md
+Description: |
+  Helper button for NPT that renumbers all send functions in ascending order.
+Parameters:
+- none

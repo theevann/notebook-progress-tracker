@@ -4,6 +4,14 @@ Utility to track live progress of an audience using python notebook.
 
 Check it online: https://courdier.pythonanywhere.com/
 
+### Renumbering the notebook questions
+pip install jupyter_contrib_nbextensions
+jupyter contrib nbextensions install
+jupyter nbextension install npt-jpt --user
+jupyter nbextension enable npt-jpt/main
+
+
+
 # Installation
 
 ## Automatic
