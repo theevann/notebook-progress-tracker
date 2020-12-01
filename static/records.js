@@ -203,7 +203,7 @@ var RecordsList = function (_React$Component) {
                 __self: this
             }), React.createElement(
                 'div',
-                { className: 'row', style: { overflowY: "scroll" }, __source: {
+                { className: 'row', style: { overflowY: "auto" }, __source: {
                         fileName: _jsxFileName,
                         lineNumber: 113
                     },
