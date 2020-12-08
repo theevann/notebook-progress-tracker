@@ -67,6 +67,7 @@ python flask_app.py
 # Reference
 
 This tool was created by Evann Courdier (EPFL) and Aymeric Dieuleveut (Ecole Polytechnique).
-The code was mostly developed by Evann Courdier.
+
+The code was developed by Evann Courdier.
 
 
