@@ -70,4 +70,5 @@ This tool was created by Evann Courdier (EPFL) and Aymeric Dieuleveut (Ecole Pol
 
 The code was developed by Evann Courdier.
 
+Copyright (c) 2020 E. Courdier A.Dieuleveut
 
