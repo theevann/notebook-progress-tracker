@@ -1,4 +1,4 @@
-Utility to track live progress of an audience using python notebook.
+Utility to track live progress of an audience using python notebook. See this [documentation](docs/Python_Tracker.pdf) for details.
 
 # Use
 
@@ -61,3 +61,12 @@ flask db upgrade
 source nptenv/bin/activate
 python flask_app.py
 ```
+
+
+
+# Reference
+
+This tool was created by Evann Courdier (EPFL) and Aymeric Dieuleveut (Ecole Polytechnique).
+The code was mostly developed by Evann Courdier.
+
+
