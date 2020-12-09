@@ -28,7 +28,7 @@ define([
     }
 
     function create_init(){
-        let path = Jupyter.notebook.notebook_path.replace(".ipynb", "_init_student.ipynb");
+        let path = Jupyter.notebook.notebook_path.replace(".ipynb", "_init_student_version.ipynb");
         let model_json = Jupyter.notebook.toJSON();
 
         model_json.cells.forEach((c) => {
