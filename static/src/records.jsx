@@ -140,16 +140,34 @@ class RecordsSearchbar extends React.Component {
     render() {
         let fields = [['Name', 'sender_name'], ['Date', 'f_time'], ['Question nb', 'question_nb']];
         return (
-            <div className="row search row-record">
-                {fields.map(([name, field]) =>
-                    <div key={name} className='col-sm col-record'>
-                        <input type="text" name={field} placeholder={name} style={{ 'width': '100%' }} onChange={this.handleFilterTextChange.bind(this)}></input>
+            <div>
+                <div className="row search row-record">
+                    {fields.map(([name, field]) =>
+                        <div key={name} className='col-sm col-record'>
+                            <input type="text" name={field} placeholder={name} style={{ 'width': '100%' }} onChange={this.handleFilterTextChange.bind(this)}></input>
+                        </div>
+                    )}
+                    <div className='col-sm-5 col-record'>
+                        <button onClick={this.clearFilters.bind(this)} className='btn btn-secondary'>Clear Filters</button>
+                        <button onClick={this.props.update} className='btn btn-secondary'>Reload</button>
+                        <button className='btn btn-danger' data-toggle="modal" data-target="#confirm-delete">Delete</button>
                     </div>
-                )}
-                <div className='col-sm-5 col-record'>
-                    <button onClick={this.clearFilters.bind(this)} className='btn btn-secondary'>Clear Filters</button>
-                    <button onClick={this.props.update} className='btn btn-secondary'>Reload</button>
-                    <button onClick={this.props.delete} className='btn btn-danger'>Delete</button>
+                </div>
+                <div className="modal fade" id="confirm-delete" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            {/* <div className="modal-header">
+                                        Confirm
+                            </div> */}
+                            <div className="modal-body">
+                                Do you want to delete the currently filtered records ?
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
+                                <button onClick={this.props.delete} type="button" className="btn btn-danger btn-ok" data-dismiss="modal">Delete</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
