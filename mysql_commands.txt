@@ -15,3 +15,7 @@ DELETE FROM sessions;
 
 DROP TABLE records;
 DROP TABLE sessions;
+
+UPDATE `records` SET part_id=1 WHERE session_id=1;
+INSERT INTO `session_parts` VALUES (1,'default',1,'', 1);
+
