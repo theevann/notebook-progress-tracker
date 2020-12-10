@@ -36,9 +36,8 @@ exec(requests.get("https://courdier.pythonanywhere.com/get-send-code").content)
 npt_config = {
     'session_name': 'your-session-name-here',
     'session_owner': 'your-username-here',
-}
-
-npt_config['sender_name'] = input("Name:")</code></pre>
+    'sender_name': input("Your name:"),
+}</code></pre>
             </div>
             In this cell, you need to provide the name of the session previously created, as well as your username.
             <br>
@@ -67,9 +66,10 @@ send(func, 4);</code></pre>
             <div class="row text-left justify-content-center" style="margin-top:20px;">
                 <pre style="width:60%"><code data-language="python">npt_config = {
     'session_name': '',  # The session name chosen on the website
+    'part_name': 'default',  # The part name (Default to 'default')
     'session_owner': '',  # Your username on the website
     'sender_name': '',  # Name of the user of the notebook
-    'log': False,  # Log sending state 
+    'log': False,  # Log of the sending state 
 }</code></pre>
             </div>
         </div>
