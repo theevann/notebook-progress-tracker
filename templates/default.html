@@ -1,16 +1,17 @@
 {% if current_user.is_authenticated %}
     {% set navigation_bar = {
-        'index': ('/', 'Index', 'NPT'),
-        'sessions': ('/sessions', 'Sessions', 'All Sessions'),
-        'records': ('/records', 'Records', 'All Records'),
-        'dashboard': ('/dashboard', 'Dashboard', 'Dashboard'),
-        'logout': ('/logout', 'Logout', 'Logout'),
+        'index': ('/', 'Index', 'Notebook Progress Tracker'),
+        'sessions': ('/sessions', 'Sessions', 'NPT'),
+        'records': ('/records', 'Records', 'NPT'),
+        'dashboard': ('/dashboard', 'Dashboard', 'NPT'),
+        'settings': ('/settings', 'Settings', 'NPT'),
+        'logout': ('/logout', 'Logout', 'NPT'),
     } -%}
 {% else %}
     {% set navigation_bar = {
         'index': ('/', 'Index', 'NPT'),
-        'login': ('/login', 'Login', 'Login'),
-        'signup': ('/signup', 'Sign up', 'Sign up'),
+        'login': ('/login', 'Login', 'NPT'),
+        'signup': ('/signup', 'Sign up', 'NPT'),
     } -%}
 {% endif %}
 

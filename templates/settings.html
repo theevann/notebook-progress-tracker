@@ -1,0 +1,109 @@
+{% extends "default.html" %}
+{% set active_page = "settings" %}
+
+{% block head %}
+    {{ super() }}
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='session_management.css') }}">
+    <title>Settings </title>
+    <style>
+        .container {
+            font-size: 1rem;
+        }
+
+        .row > .col-5 > div {
+            margin-top: 1rem;
+        }
+        
+        h1 {
+            margin-top: 1.5rem;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-5 offset-2">
+                <div class="row">
+                    <div class="col">
+                        <h1>Account</h1>
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="input-group col-8">
+                        <div class="input-group-prepend offset-1">
+                            <div class="input-group-text">Username</div>
+                        </div>
+                        <span class="form-control">{{ user.username }}</span>
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="input-group col-8">
+                        <div class="input-group-prepend offset-1">
+                            <div class="input-group-text">Email</div>
+                        </div>
+                        <span class="form-control">{{ user.email }}</span>
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="col">
+                        <h1>Change password</h1>
+                    </div>
+                </div>
+        
+                {% if error %}
+                    <div class="alert alert-warning text-center col" role="alert">
+                        {{ error }}
+                    </div>
+                {% endif %}
+        
+                {% if success_pwd %}
+                    <div class="alert alert-success text-center col" role="alert">
+                        Password changed successfully
+                    </div>
+                {% endif %}
+        
+                <div>
+                    <form action="/change-password" method="POST">
+                        <div class="row form-group input-group">
+                            <div class="input-group-prepend offset-1">
+                                <div class="input-group-text">Current Password</div>
+                            </div>
+                            <input type="password" class="form-control" id="current_password" name="current_password" placeholder="Enter your current password">
+                        </div>
+                        
+                        <div class="row form-group input-group">
+                            <div class="input-group-prepend offset-1">
+                                <div class="input-group-text">New Password</div>
+                            </div>
+                            <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Enter your new password">
+                        </div>
+                        
+                        <div class="row text-center">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary px-5">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {{ super() }}
+
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- <script type="module" src="/static/settings.js"></script> -->
+
+
+    <!-- <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script> -->
+    <!-- <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
+    <!-- <script type="text/babel" src="static/src/session_management.jsx"></script> -->
+{% endblock %}

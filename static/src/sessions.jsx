@@ -70,7 +70,7 @@ class SessionRow extends React.Component {
                     <i className={"fa fa-toggle-" + (session.open ? "on" : "off") } style={{"fontSize": "24px"}}></i>
                 </div>
                 <div className="col-sm-1 cliquable col-session" onClick={() => this.edit_session()}>
-                    <a href="#" class="btn btn-primary btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="#" class="btn btn-primary btn-default"><span class="fa fa-pencil"></span></a>
                 </div>
             </div>
         );

@@ -200,7 +200,7 @@ var SessionRow = function (_React$Component3) {
                             },
                             __self: this
                         },
-                        React.createElement("span", { "class": "glyphicon glyphicon-pencil", __source: {
+                        React.createElement("span", { "class": "fa fa-pencil", __source: {
                                 fileName: _jsxFileName,
                                 lineNumber: 73
                             },

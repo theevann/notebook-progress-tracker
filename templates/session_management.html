@@ -5,7 +5,6 @@
     {{ super() }}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='session_management.css') }}">
     <title>Manage session {{ session.id }}</title>
 {% endblock %}
@@ -13,7 +12,7 @@
 
 {% block content %}
     <div id='session-detail' class="container">
-        <a href="/sessions" id='back-button' class="btn btn-primary btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Back to list</a>
+        <a href="/sessions" id='back-button' class="btn btn-primary btn-default"><span class="fa fa-arrow-left"></span> Back to list</a>
         <div class="row header row-sessm" draggable="true">
             <div class="col-sm-1 col-sessm">ID</div>
             <div class="col-sm-2 col-sessm">Name</div>
