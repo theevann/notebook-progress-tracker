@@ -25,6 +25,7 @@ var RecordsList = function (_React$Component) {
             'sessions': [],
             'records': [],
             'visible_records': [],
+            'name_visible': true,
             'filters': {
                 'sender_name': '',
                 'f_time': '',
@@ -63,6 +64,7 @@ var RecordsList = function (_React$Component) {
         value: function update() {
             var _this3 = this;
 
+            console.log("Update");
             jQuery.get("/get-records?sid=" + this.state.session_id, function (data) {
                 _this3.setState({ 'records': data }, _this3.updateVisibleRecords);
             });
@@ -80,16 +82,18 @@ var RecordsList = function (_React$Component) {
             var filters = this.state.filters;
             var visible_records = [];
 
-            this.state.records.forEach(function (record) {
-                try {
+            try {
+                this.state.records.forEach(function (record) {
                     if (!Object.keys(filters).every(function (key) {
                         if (key == "question_nb" && filters[key].toString() != "") return record[key].toString() === filters[key];
                         return record[key].toString().match(new RegExp(filters[key], "i"));
                     })) return;
-                } finally {}
 
-                visible_records.push(record);
-            });
+                    visible_records.push(record);
+                });
+            } catch (e) {
+                visible_records = this.state.records;
+            }
 
             this.setState({ 'visible_records': visible_records });
         }
@@ -116,14 +120,21 @@ var RecordsList = function (_React$Component) {
             });
         }
     }, {
+        key: 'toggleName',
+        value: function toggleName() {
+            this.setState({
+                name_visible: !this.state.name_visible
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this4 = this;
 
             var records = this.state.visible_records.map(function (record) {
-                return React.createElement(RecordsRow, { key: record.id + '-' + record.f_time, record: record, update: _this4.update.bind(_this4), __source: {
+                return React.createElement(RecordsRow, { key: record.id + '-' + record.f_time, record: record, update: _this4.update.bind(_this4), name_visible: _this4.state.name_visible, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 91
+                        lineNumber: 101
                     },
                     __self: _this4
                 });
@@ -139,7 +150,7 @@ var RecordsList = function (_React$Component) {
                 'div',
                 { key: 'session_dropdown', className: 'row dropdown mb-2', style: { display: "block", textAlign: "center" }, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 99
+                        lineNumber: 109
                     },
                     __self: this
                 },
@@ -147,7 +158,7 @@ var RecordsList = function (_React$Component) {
                     'button',
                     { className: 'btn btn-secondary dropdown-toggle', type: 'button', id: 'dropdownMenuButton', 'data-toggle': 'dropdown', 'aria-haspopup': 'true', 'aria-expanded': 'false', __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 100
+                            lineNumber: 110
                         },
                         __self: this
                     },
@@ -158,7 +169,7 @@ var RecordsList = function (_React$Component) {
                     {
                         __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 103
+                            lineNumber: 113
                         },
                         __self: this
                     },
@@ -166,7 +177,7 @@ var RecordsList = function (_React$Component) {
                         'div',
                         { className: 'dropdown-menu', 'aria-labelledby': 'dropdownMenuButton', __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 104
+                                lineNumber: 114
                             },
                             __self: this
                         },
@@ -179,7 +190,7 @@ var RecordsList = function (_React$Component) {
                                         return _this4.changeSession(id);
                                     }, __source: {
                                         fileName: _jsxFileName,
-                                        lineNumber: 106
+                                        lineNumber: 116
                                     },
                                     __self: _this4
                                 },
@@ -191,21 +202,21 @@ var RecordsList = function (_React$Component) {
                         })
                     )
                 )
-            ), React.createElement(RecordsHeader, { key: 'header', __source: {
+            ), React.createElement(RecordsHeader, { key: 'header', toggleName: this.toggleName.bind(this), name_visible: this.state.name_visible, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 111
+                    lineNumber: 121
                 },
                 __self: this
             }), React.createElement(RecordsSearchbar, { key: 'searchbar', update: this.update.bind(this), 'delete': this.deleteRecords.bind(this), clearFilters: this.clearFilters.bind(this), onFilterChange: this.onFilterChange.bind(this), __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 112
+                    lineNumber: 122
                 },
                 __self: this
             }), React.createElement(
                 'div',
                 { className: 'row', style: { overflowY: "auto" }, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 113
+                        lineNumber: 123
                     },
                     __self: this
                 },
@@ -213,7 +224,7 @@ var RecordsList = function (_React$Component) {
                     'div',
                     { className: 'col', __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 115
+                            lineNumber: 125
                         },
                         __self: this
                     },
@@ -262,7 +273,7 @@ var RecordsSearchbar = function (_React$Component2) {
                 {
                     __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 143
+                        lineNumber: 153
                     },
                     __self: this
                 },
@@ -270,7 +281,7 @@ var RecordsSearchbar = function (_React$Component2) {
                     'div',
                     { className: 'row search row-record', __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 144
+                            lineNumber: 154
                         },
                         __self: this
                     },
@@ -283,13 +294,13 @@ var RecordsSearchbar = function (_React$Component2) {
                             'div',
                             { key: name, className: 'col-sm col-record', __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 146
+                                    lineNumber: 156
                                 },
                                 __self: _this6
                             },
                             React.createElement('input', { type: 'text', name: field, placeholder: name, style: { 'width': '100%' }, onChange: _this6.handleFilterTextChange.bind(_this6), __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 147
+                                    lineNumber: 157
                                 },
                                 __self: _this6
                             })
@@ -299,7 +310,7 @@ var RecordsSearchbar = function (_React$Component2) {
                         'div',
                         { className: 'col-sm-5 col-record', __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 150
+                                lineNumber: 160
                             },
                             __self: this
                         },
@@ -307,7 +318,7 @@ var RecordsSearchbar = function (_React$Component2) {
                             'button',
                             { onClick: this.clearFilters.bind(this), className: 'btn btn-secondary', __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 151
+                                    lineNumber: 161
                                 },
                                 __self: this
                             },
@@ -317,7 +328,7 @@ var RecordsSearchbar = function (_React$Component2) {
                             'button',
                             { onClick: this.props.update, className: 'btn btn-secondary', __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 152
+                                    lineNumber: 162
                                 },
                                 __self: this
                             },
@@ -327,7 +338,7 @@ var RecordsSearchbar = function (_React$Component2) {
                             'button',
                             { className: 'btn btn-danger', 'data-toggle': 'modal', 'data-target': '#confirm-delete', __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 153
+                                    lineNumber: 163
                                 },
                                 __self: this
                             },
@@ -339,7 +350,7 @@ var RecordsSearchbar = function (_React$Component2) {
                     'div',
                     { className: 'modal fade', id: 'confirm-delete', tabIndex: '-1', role: 'dialog', 'aria-labelledby': 'myModalLabel', 'aria-hidden': 'true', __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 156
+                            lineNumber: 167
                         },
                         __self: this
                     },
@@ -347,7 +358,7 @@ var RecordsSearchbar = function (_React$Component2) {
                         'div',
                         { className: 'modal-dialog', __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 157
+                                lineNumber: 168
                             },
                             __self: this
                         },
@@ -355,7 +366,7 @@ var RecordsSearchbar = function (_React$Component2) {
                             'div',
                             { className: 'modal-content', __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 158
+                                    lineNumber: 169
                                 },
                                 __self: this
                             },
@@ -363,7 +374,7 @@ var RecordsSearchbar = function (_React$Component2) {
                                 'div',
                                 { className: 'modal-body', __source: {
                                         fileName: _jsxFileName,
-                                        lineNumber: 162
+                                        lineNumber: 173
                                     },
                                     __self: this
                                 },
@@ -373,7 +384,7 @@ var RecordsSearchbar = function (_React$Component2) {
                                 'div',
                                 { className: 'modal-footer', __source: {
                                         fileName: _jsxFileName,
-                                        lineNumber: 165
+                                        lineNumber: 176
                                     },
                                     __self: this
                                 },
@@ -381,7 +392,7 @@ var RecordsSearchbar = function (_React$Component2) {
                                     'button',
                                     { type: 'button', className: 'btn btn-default', 'data-dismiss': 'modal', __source: {
                                             fileName: _jsxFileName,
-                                            lineNumber: 166
+                                            lineNumber: 177
                                         },
                                         __self: this
                                     },
@@ -391,7 +402,7 @@ var RecordsSearchbar = function (_React$Component2) {
                                     'button',
                                     { onClick: this.props.delete, type: 'button', className: 'btn btn-danger btn-ok', 'data-dismiss': 'modal', __source: {
                                             fileName: _jsxFileName,
-                                            lineNumber: 167
+                                            lineNumber: 178
                                         },
                                         __self: this
                                     },
@@ -422,21 +433,37 @@ var RecordsHeader = function (_React$Component3) {
         value: function render() {
             var _this8 = this;
 
-            var names = ['Name', 'Date', 'Question number'];
+            var names = ['Date', 'Question number'];
             return React.createElement(
                 'div',
                 { className: 'row header row-record', __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 182
+                        lineNumber: 193
                     },
                     __self: this
                 },
+                React.createElement(
+                    'div',
+                    { className: 'col-sm col-record', __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 194
+                        },
+                        __self: this
+                    },
+                    'Name  ',
+                    React.createElement('i', { onClick: this.props.toggleName, className: "fa fa-eye" + (this.props.name_visible ? "" : "-slash"), style: { "fontSize": "15px" }, __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 194
+                        },
+                        __self: this
+                    })
+                ),
                 names.map(function (name) {
                     return React.createElement(
                         'div',
                         { key: name, className: 'col-sm col-record', __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 184
+                                lineNumber: 196
                             },
                             __self: _this8
                         },
@@ -447,7 +474,7 @@ var RecordsHeader = function (_React$Component3) {
                     'div',
                     { className: 'col-sm-5 col-record', __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 186
+                            lineNumber: 198
                         },
                         __self: this
                     },
@@ -475,13 +502,13 @@ var RecordsRow = function (_React$Component4) {
             var _this10 = this;
 
             var record = this.props.record;
-            var fields = ['sender_name', 'f_time', 'question_nb'];
+            var fields = ['f_time', 'question_nb'];
             var data = record.f_data;
 
             if (record.type == 'image') {
                 data = React.createElement('img', { className: 'image', src: 'data:;base64,' + data, style: { 'maxWidth': '100%', 'maxHeight': '100%' }, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 200
+                        lineNumber: 212
                     },
                     __self: this
                 });
@@ -491,7 +518,7 @@ var RecordsRow = function (_React$Component4) {
                         'span',
                         { key: key, __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 202
+                                lineNumber: 214
                             },
                             __self: _this10
                         },
@@ -499,7 +526,7 @@ var RecordsRow = function (_React$Component4) {
                         React.createElement('br', {
                             __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 202
+                                lineNumber: 214
                             },
                             __self: _this10
                         })
@@ -511,7 +538,7 @@ var RecordsRow = function (_React$Component4) {
                     {
                         __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 204
+                            lineNumber: 216
                         },
                         __self: this
                     },
@@ -519,7 +546,7 @@ var RecordsRow = function (_React$Component4) {
                         'code',
                         { className: '', 'data-language': 'python', __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 204
+                                lineNumber: 216
                             },
                             __self: this
                         },
@@ -532,7 +559,7 @@ var RecordsRow = function (_React$Component4) {
                     {
                         __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 206
+                            lineNumber: 218
                         },
                         __self: this
                     },
@@ -544,16 +571,26 @@ var RecordsRow = function (_React$Component4) {
                 'div',
                 { className: 'row row-record', __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 210
+                        lineNumber: 222
                     },
                     __self: this
                 },
+                React.createElement(
+                    'div',
+                    { className: 'col-sm col-record', __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 223
+                        },
+                        __self: this
+                    },
+                    this.props.name_visible ? record["sender_name"] : ""
+                ),
                 fields.map(function (field) {
                     return React.createElement(
                         'div',
                         { key: field, className: 'col-sm col-record', __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 212
+                                lineNumber: 227
                             },
                             __self: _this10
                         },
@@ -562,7 +599,7 @@ var RecordsRow = function (_React$Component4) {
                             {
                                 __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 213
+                                    lineNumber: 228
                                 },
                                 __self: _this10
                             },
@@ -574,7 +611,7 @@ var RecordsRow = function (_React$Component4) {
                     'div',
                     { className: 'col-sm-5 col-record', __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 216
+                            lineNumber: 231
                         },
                         __self: this
                     },
@@ -588,5 +625,12 @@ var RecordsRow = function (_React$Component4) {
 }(React.Component);
 
 var domContainer = document.querySelector('#records-list');
-ReactDOM.render(React.createElement(RecordsList), domContainer);
+var record_list = ReactDOM.render(React.createElement(RecordsList), domContainer);
 MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+document.onfocus = function () {
+    return record_list.update();
+};
+setInterval(function () {
+    if (document.hasFocus()) record_list.update();
+}, 30000);

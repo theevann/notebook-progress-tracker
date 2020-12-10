@@ -8,6 +8,7 @@ class RecordsList extends React.Component {
             'sessions': [],
             'records': [],
             'visible_records': [],
+            'name_visible': true,
             'filters': {
                 'sender_name': '',
                 'f_time': '',
@@ -89,9 +90,15 @@ class RecordsList extends React.Component {
         });
     }
 
+    toggleName() {
+        this.setState({
+            name_visible: !this.state.name_visible
+        });
+    }
+
     render() {
         let records = this.state.visible_records.map(record => {
-            return <RecordsRow key={`${record.id}-${record.f_time}`} record={record} update={this.update.bind(this)} />;
+            return <RecordsRow key={`${record.id}-${record.f_time}`} record={record} update={this.update.bind(this)} name_visible={this.state.name_visible} />;
         })
 
         let session_id = this.state.session_id;
@@ -111,7 +118,7 @@ class RecordsList extends React.Component {
                     </div>
                 </div>
             </div>,
-            <RecordsHeader key="header" />,
+            <RecordsHeader key="header" toggleName={this.toggleName.bind(this)} name_visible={this.state.name_visible} />,
             <RecordsSearchbar key="searchbar" update={this.update.bind(this)} delete={this.deleteRecords.bind(this)} clearFilters={this.clearFilters.bind(this)} onFilterChange={this.onFilterChange.bind(this)} />,
             <div className="row" style={{ overflowY: "auto" }}>
             {/* <div className="row"> */}
@@ -181,9 +188,10 @@ class RecordsSearchbar extends React.Component {
 
 class RecordsHeader extends React.Component {
     render() {
-        let names = ['Name', 'Date', 'Question number'];
+        let names = ['Date', 'Question number'];
         return (
             <div className="row header row-record">
+                <div className='col-sm col-record'>Name  <i onClick={this.props.toggleName} className={"fa fa-eye" + (this.props.name_visible ? "" : "-slash")} style={{ "fontSize": "15px",  }}></i></div>
                 {names.map(name =>
                     <div key={name} className='col-sm col-record'>{name}</div>
                 )}
@@ -197,7 +205,7 @@ class RecordsHeader extends React.Component {
 class RecordsRow extends React.Component {
     render() {
         let record = this.props.record;
-        let fields = ['sender_name', 'f_time', 'question_nb'];
+        let fields = ['f_time', 'question_nb'];
         let data = record.f_data;
 
         if (record.type == 'image') {
@@ -212,6 +220,9 @@ class RecordsRow extends React.Component {
 
         return (
             <div className="row row-record">
+                <div className='col-sm col-record'>
+                    {this.props.name_visible ? record["sender_name"] : ""}
+                </div>
                 {fields.map(field =>
                     <div key={field} className='col-sm col-record'>
                         <p>{record[field]}</p>
