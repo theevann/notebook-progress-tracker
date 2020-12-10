@@ -37,6 +37,7 @@ class RecordsList extends React.Component {
     }
 
     update() {
+        console.log("Update");
         jQuery.get("/get-records?sid=" + this.state.session_id, (data) => {
             this.setState({ 'records': data }, this.updateVisibleRecords);
         });
@@ -52,17 +53,17 @@ class RecordsList extends React.Component {
         let filters = this.state.filters;
         let visible_records = [];
 
-            try {
+        try {
             this.state.records.forEach(record => {
                 if (!Object.keys(filters).every(key => {
                     if (key == "question_nb" && filters[key].toString() != "")
                         return record[key].toString() === filters[key];
                     return record[key].toString().match(new RegExp(filters[key], "i"));
                 }))
-                    return;
-
-            visible_records.push(record);
-        })
+                return;
+                
+                visible_records.push(record);
+            })
         } catch(e) {
             visible_records = this.state.records;
         }
@@ -155,6 +156,7 @@ class RecordsSearchbar extends React.Component {
                         <button className='btn btn-danger' data-toggle="modal" data-target="#confirm-delete">Delete</button>
                     </div>
                 </div>
+
                 <div className="modal fade" id="confirm-delete" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -224,5 +226,11 @@ class RecordsRow extends React.Component {
 }
 
 const domContainer = document.querySelector('#records-list');
-ReactDOM.render(React.createElement(RecordsList), domContainer);
+let record_list = ReactDOM.render(React.createElement(RecordsList), domContainer);
 MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+document.onfocus = () => record_list.update();
+setInterval(() => {
+    if (document.hasFocus())
+        record_list.update();
+}, 30000);
