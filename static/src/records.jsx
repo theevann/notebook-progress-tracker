@@ -52,18 +52,20 @@ class RecordsList extends React.Component {
         let filters = this.state.filters;
         let visible_records = [];
 
-        this.state.records.forEach(record => {
             try {
+            this.state.records.forEach(record => {
                 if (!Object.keys(filters).every(key => {
                     if (key == "question_nb" && filters[key].toString() != "")
                         return record[key].toString() === filters[key];
                     return record[key].toString().match(new RegExp(filters[key], "i"));
                 }))
                     return;
-            } finally { }
 
             visible_records.push(record);
         })
+        } catch(e) {
+            visible_records = this.state.records;
+        }
 
         this.setState({ 'visible_records': visible_records });
     }
