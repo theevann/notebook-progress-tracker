@@ -17,6 +17,11 @@ class RecordsList extends React.Component {
         };
     }
 
+    getSession(session_id) {
+        let session = session_id && this.state.sessions.find(s => s.id == session_id);
+        return session;
+    }
+
     componentDidMount() {
         jQuery.get("/get-sessions", (data) => {
             this.setState({ 'sessions': data });
@@ -28,7 +33,7 @@ class RecordsList extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        MathJax && MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         Rainbow.color();
     }
 
@@ -102,7 +107,7 @@ class RecordsList extends React.Component {
         })
 
         let session_id = this.state.session_id;
-        let session = session_id && this.state.sessions.find(s => s.id == session_id);
+        let session = this.getSession(session_id);
         let session_name = session && `[${session_id}] ${session.name}` || "Choose a session";
 
         return [
@@ -119,7 +124,7 @@ class RecordsList extends React.Component {
                 </div>
             </div>,
             <RecordsHeader key="header" toggleName={this.toggleName.bind(this)} name_visible={this.state.name_visible} />,
-            <RecordsSearchbar key="searchbar" update={this.update.bind(this)} delete={this.deleteRecords.bind(this)} clearFilters={this.clearFilters.bind(this)} onFilterChange={this.onFilterChange.bind(this)} />,
+            <RecordsSearchbar key="searchbar" session={this.getSession(this.state.session_id)} update={this.update.bind(this)} delete={this.deleteRecords.bind(this)} clearFilters={this.clearFilters.bind(this)} onFilterChange={this.onFilterChange.bind(this)} />,
             <div className="row" style={{ overflowY: "auto" }}>
             {/* <div className="row"> */}
                 <div className="col">
@@ -149,6 +154,7 @@ class RecordsSearchbar extends React.Component {
 
     render() {
         let fields = [['Name', 'sender_name'], ['Date', 'f_time'], ['Question nb', 'question_nb']];
+        let is_sharing = this.props.session && this.props.session.sharing;
         return (
             <div>
                 <div className="row search row-record">
@@ -160,7 +166,11 @@ class RecordsSearchbar extends React.Component {
                     <div className='col-sm-5 col-record'>
                         <button onClick={this.clearFilters.bind(this)} className='btn btn-secondary'>Clear Filters</button>
                         <button onClick={this.props.update} className='btn btn-secondary'>Reload</button>
+                        {
+                        is_sharing ?
+                        "" :
                         <button className='btn btn-danger' data-toggle="modal" data-target="#confirm-delete">Delete</button>
+                        }
                     </div>
                 </div>
 
@@ -201,6 +211,9 @@ class RecordsHeader extends React.Component {
     }
 }
 
+
+// shared session
+// settings change pwd
 
 class RecordsRow extends React.Component {
     render() {

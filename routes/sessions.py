@@ -1,7 +1,8 @@
 from models.base import db
-from models import Session, Record, SessionPart
+from models import Session, Record, SessionPart, SessionShare
+from .auth import load_user
 
-from sqlalchemy import func
+from sqlalchemy import or_
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 
@@ -26,8 +27,8 @@ def show_session(session_id):
 @sessions_bp.route('/get-sessions', methods=["GET"])
 @login_required
 def get_sessions():
-    all_sessions = Session.query.order_by(Session.id).filter_by(owner=current_user).all()
-    dict_sessions = [s.to_dict() for s in all_sessions]
+    dict_sessions = [s.to_dict() for s in current_user.sessions]
+    dict_sessions += [s.to_dict(sharing=True) for s in current_user.shared_sessions]
     return jsonify(dict_sessions)
 
 
@@ -37,6 +38,57 @@ def get_session():
     dict_session = Session.query.filter_by(owner=current_user, id=request.args['id']).one().to_dict()
     dict_session['parts'] = [p.to_dict() for p in SessionPart.query.filter_by(session_id=request.args['id']).all()]
     return jsonify(dict_session)
+
+
+@sessions_bp.route("/add-share", methods=["GET"])
+@login_required
+def add_share():
+    if not 'sid' in request.args or not 'username' in request.args:
+        return "Fail"  
+
+    sid = int(request.args['sid'])
+    session = Session.query.filter_by(id=sid, owner=current_user).first()
+    if not session:
+        return "Fail"
+        
+    username = request.args['username']
+    shared_user = load_user(username)
+    if shared_user is None or shared_user == current_user:
+        return "Fail"
+
+    share = SessionShare.query.filter_by(session=session, shared_user_id=shared_user.id).first()
+    if share:
+        return "Fail"
+        
+    share = SessionShare(session=session, shared_user_id=shared_user.id)
+    db.session.add(share)
+    db.session.commit()
+    return "Success"
+
+
+@sessions_bp.route("/del-share", methods=["GET"])
+@login_required
+def del_share():
+    if not 'sid' in request.args:
+        return "Fail"
+
+    sid = int(request.args['sid'])
+    session = Session.query.filter_by(id=sid).filter(or_(Session.owner == current_user, Session.shared_users.contains(current_user)))
+    if not session.first():
+        return "Fail"
+
+    if 'username' in request.args:
+        username = request.args['username']
+        shared_user = load_user(username)
+    else:
+        shared_user = current_user
+
+    if shared_user is None:
+        return "Fail"
+
+    SessionShare.query.filter_by(session_id=sid, shared_user=shared_user).delete()
+    db.session.commit()
+    return "Success"
 
 
 @sessions_bp.route("/add-session", methods=["POST"])
@@ -115,7 +167,7 @@ def del_part():
     SessionPart.query.join(Session).filter(SessionPart.id == pid, Session.owner_id == current_user.id).delete()
     # TODO: Here add check that session still has other parts 
     db.session.commit()
-    return 200, "OK"
+    return "OK", 200
 
 
 @sessions_bp.route("/update-part", methods=["POST"])

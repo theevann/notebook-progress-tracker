@@ -3,6 +3,7 @@ from datetime import datetime
 
 from .base import db
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.associationproxy import association_proxy
 
 
 paris = pytz.timezone('Europe/Paris')
@@ -22,10 +23,11 @@ class Session(db.Model):
     owner = relationship("User", foreign_keys=owner_id, back_populates="sessions")
     records = relationship("Record", back_populates="session")
     parts = relationship("SessionPart", back_populates="session")
+    shared_users = association_proxy("session_sharings", "shared_user")
 
-    def to_dict(self):
-        fields = ['id', 'name', 'description', 'f_owner', 'f_creation_date', 'open']
-        return {f: getattr(self, f) for f in fields}
+    def to_dict(self, sharing=False):
+        fields = ['id', 'name', 'description', 'f_owner', 'f_creation_date', 'f_shared_users', 'open']
+        return dict(sharing=sharing, **{f: getattr(self, f) for f in fields})
 
     @classmethod
     def columns(cls):
@@ -39,3 +41,7 @@ class Session(db.Model):
     @property
     def f_owner(self):
         return self.owner.username
+
+    @property
+    def f_shared_users(self):
+        return [u.username for u in self.shared_users]

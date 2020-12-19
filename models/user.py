@@ -3,6 +3,7 @@ from datetime import datetime
 
 from .base import db
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.associationproxy import association_proxy
 
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash
@@ -21,6 +22,7 @@ class User(UserMixin, db.Model):
     admin = db.Column(db.Boolean, default=False)
 
     sessions = relationship("Session", back_populates="owner")
+    shared_sessions = association_proxy("session_sharings", "session")
 
 
     def check_password(self, password):

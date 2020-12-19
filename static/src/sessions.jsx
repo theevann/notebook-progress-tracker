@@ -22,7 +22,10 @@ class SessionList extends React.Component {
 
         return [
             <SessionHeader key="header" names={names} />,
-            this.state.sessions.map((session) => <SessionRow key={session.id} session={session} fields={fields} update={() => this.update()} />)
+            this.state.sessions.map((session) => {
+                let Row = session.sharing ? SharedSessionRow : SessionRow;
+                return <Row key={session.id} session={session} fields={fields} update={() => this.update()} />
+            })
         ];
     }
 }
@@ -36,7 +39,7 @@ class SessionHeader extends React.Component {
                     <div key={name} className='col-sm col-session'>{name}</div>
                 )}
                 <div className="col-sm-1 col-session">
-                    Edit
+                    Action
                 </div>
             </div>
         );
@@ -45,11 +48,6 @@ class SessionHeader extends React.Component {
 
 
 class SessionRow extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { };
-    }
-
     edit_session() {
         window.location = "/sessions/" + this.props.session.id;
     }
@@ -66,17 +64,43 @@ class SessionRow extends React.Component {
                     <div key={field} className='col-sm col-session'>{session[field]}</div>
                 )}
                 <div className="col-sm cliquable col-session" onClick={() => this.toggle_session_state()}>
-                    { session.open ? "Open" : "Closed" }
-                    <i className={"fa fa-toggle-" + (session.open ? "on" : "off") } style={{"fontSize": "24px"}}></i>
+                    {session.open ?
+                    <button className="btn btn-success">Open  <i class="fa fa-unlock"></i></button>:
+                    <button className="btn btn-secondary">Closed <i class="fa fa-lock"></i></button>}
                 </div>
                 <div className="col-sm-1 cliquable col-session" onClick={() => this.edit_session()}>
-                    <a href="#" class="btn btn-primary btn-default"><span class="fa fa-pencil"></span></a>
+                    <a href="#" class="btn btn-primary btn-default" title="Edit"><span class="fa fa-pencil"></span></a>
+                    {/* <Button faClass="pencil" btnClass="primary"/> */}
                 </div>
             </div>
         );
     }
 }
 
+class SharedSessionRow extends React.Component {
+    unlink_session() {
+        $.get("/del-share?sid=" + this.props.session.id, this.props.update);
+    }
+
+    render() {
+        let session = this.props.session;
+        return (
+            <div key="fields" className="row row-session">
+                {this.props.fields.map(field =>
+                    <div key={field} className='col-sm col-session col-session-shared'>{session[field]}</div>
+                )}
+                <div className="col-sm col-session col-session-shared">
+                    {session.open ?
+                        <button className="btn btn-success btn-disabled" disabled>Open  <i class="fa fa-unlock"></i></button> :
+                        <button className="btn btn-secondary btn-disabled" disabled>Closed <i class="fa fa-lock"></i></button>}
+                </div>
+                <div className="col-sm-1 cliquable col-session col-session-shared" onClick={() => this.unlink_session()}>
+                    <a href="#" class="btn btn-primary btn-default" title="End sharing"><span class="fa fa-unlink"></span></a>
+                </div>
+            </div>
+        );
+    }
+}
 
 const domContainer = document.querySelector('#session-list');
 let session_list = ReactDOM.render(React.createElement(SessionList), domContainer);

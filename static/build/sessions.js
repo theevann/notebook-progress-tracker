@@ -50,11 +50,12 @@ var SessionList = function (_React$Component) {
                 },
                 __self: this
             }), this.state.sessions.map(function (session) {
-                return React.createElement(SessionRow, { key: session.id, session: session, fields: fields, update: function update() {
+                var Row = session.sharing ? SharedSessionRow : SessionRow;
+                return React.createElement(Row, { key: session.id, session: session, fields: fields, update: function update() {
                         return _this3.update();
                     }, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 25
+                        lineNumber: 27
                     },
                     __self: _this3
                 });
@@ -83,7 +84,7 @@ var SessionHeader = function (_React$Component2) {
                 "div",
                 { className: "row header row-session", __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 34
+                        lineNumber: 37
                     },
                     __self: this
                 },
@@ -92,7 +93,7 @@ var SessionHeader = function (_React$Component2) {
                         "div",
                         { key: name, className: "col-sm col-session", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 36
+                                lineNumber: 39
                             },
                             __self: _this5
                         },
@@ -103,11 +104,11 @@ var SessionHeader = function (_React$Component2) {
                     "div",
                     { className: "col-sm-1 col-session", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 38
+                            lineNumber: 41
                         },
                         __self: this
                     },
-                    "Edit"
+                    "Action"
                 )
             );
         }
@@ -119,13 +120,10 @@ var SessionHeader = function (_React$Component2) {
 var SessionRow = function (_React$Component3) {
     _inherits(SessionRow, _React$Component3);
 
-    function SessionRow(props) {
+    function SessionRow() {
         _classCallCheck(this, SessionRow);
 
-        var _this6 = _possibleConstructorReturn(this, (SessionRow.__proto__ || Object.getPrototypeOf(SessionRow)).call(this, props));
-
-        _this6.state = {};
-        return _this6;
+        return _possibleConstructorReturn(this, (SessionRow.__proto__ || Object.getPrototypeOf(SessionRow)).apply(this, arguments));
     }
 
     _createClass(SessionRow, [{
@@ -148,7 +146,7 @@ var SessionRow = function (_React$Component3) {
                 "div",
                 { key: "fields", className: "row row-session", __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 64
+                        lineNumber: 62
                     },
                     __self: this
                 },
@@ -157,7 +155,7 @@ var SessionRow = function (_React$Component3) {
                         "div",
                         { key: field, className: "col-sm col-session", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 66
+                                lineNumber: 64
                             },
                             __self: _this7
                         },
@@ -170,17 +168,41 @@ var SessionRow = function (_React$Component3) {
                             return _this7.toggle_session_state();
                         }, __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 68
+                            lineNumber: 66
                         },
                         __self: this
                     },
-                    session.open ? "Open" : "Closed",
-                    React.createElement("i", { className: "fa fa-toggle-" + (session.open ? "on" : "off"), style: { "fontSize": "24px" }, __source: {
-                            fileName: _jsxFileName,
-                            lineNumber: 70
+                    session.open ? React.createElement(
+                        "button",
+                        { className: "btn btn-success", __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 68
+                            },
+                            __self: this
                         },
-                        __self: this
-                    })
+                        "Open  ",
+                        React.createElement("i", { "class": "fa fa-unlock", __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 68
+                            },
+                            __self: this
+                        })
+                    ) : React.createElement(
+                        "button",
+                        { className: "btn btn-secondary", __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 69
+                            },
+                            __self: this
+                        },
+                        "Closed ",
+                        React.createElement("i", { "class": "fa fa-lock", __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 69
+                            },
+                            __self: this
+                        })
+                    )
                 ),
                 React.createElement(
                     "div",
@@ -188,21 +210,21 @@ var SessionRow = function (_React$Component3) {
                             return _this7.edit_session();
                         }, __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 72
+                            lineNumber: 71
                         },
                         __self: this
                     },
                     React.createElement(
                         "a",
-                        { href: "#", "class": "btn btn-primary btn-default", __source: {
+                        { href: "#", "class": "btn btn-primary btn-default", title: "Edit", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 73
+                                lineNumber: 72
                             },
                             __self: this
                         },
                         React.createElement("span", { "class": "fa fa-pencil", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 73
+                                lineNumber: 72
                             },
                             __self: this
                         })
@@ -213,6 +235,119 @@ var SessionRow = function (_React$Component3) {
     }]);
 
     return SessionRow;
+}(React.Component);
+
+var SharedSessionRow = function (_React$Component4) {
+    _inherits(SharedSessionRow, _React$Component4);
+
+    function SharedSessionRow() {
+        _classCallCheck(this, SharedSessionRow);
+
+        return _possibleConstructorReturn(this, (SharedSessionRow.__proto__ || Object.getPrototypeOf(SharedSessionRow)).apply(this, arguments));
+    }
+
+    _createClass(SharedSessionRow, [{
+        key: "unlink_session",
+        value: function unlink_session() {
+            $.get("/del-share?sid=" + this.props.session.id, this.props.update);
+        }
+    }, {
+        key: "render",
+        value: function render() {
+            var _this9 = this;
+
+            var session = this.props.session;
+            return React.createElement(
+                "div",
+                { key: "fields", className: "row row-session", __source: {
+                        fileName: _jsxFileName,
+                        lineNumber: 88
+                    },
+                    __self: this
+                },
+                this.props.fields.map(function (field) {
+                    return React.createElement(
+                        "div",
+                        { key: field, className: "col-sm col-session col-session-shared", __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 90
+                            },
+                            __self: _this9
+                        },
+                        session[field]
+                    );
+                }),
+                React.createElement(
+                    "div",
+                    { className: "col-sm col-session col-session-shared", __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 92
+                        },
+                        __self: this
+                    },
+                    session.open ? React.createElement(
+                        "button",
+                        { className: "btn btn-success btn-disabled", disabled: true, __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 94
+                            },
+                            __self: this
+                        },
+                        "Open  ",
+                        React.createElement("i", { "class": "fa fa-unlock", __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 94
+                            },
+                            __self: this
+                        })
+                    ) : React.createElement(
+                        "button",
+                        { className: "btn btn-secondary btn-disabled", disabled: true, __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 95
+                            },
+                            __self: this
+                        },
+                        "Closed ",
+                        React.createElement("i", { "class": "fa fa-lock", __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 95
+                            },
+                            __self: this
+                        })
+                    )
+                ),
+                React.createElement(
+                    "div",
+                    { className: "col-sm-1 cliquable col-session col-session-shared", onClick: function onClick() {
+                            return _this9.unlink_session();
+                        }, __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 97
+                        },
+                        __self: this
+                    },
+                    React.createElement(
+                        "a",
+                        { href: "#", "class": "btn btn-primary btn-default", title: "End sharing", __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 98
+                            },
+                            __self: this
+                        },
+                        React.createElement("span", { "class": "fa fa-unlink", __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 98
+                            },
+                            __self: this
+                        })
+                    )
+                )
+            );
+        }
+    }]);
+
+    return SharedSessionRow;
 }(React.Component);
 
 var domContainer = document.querySelector('#session-list');

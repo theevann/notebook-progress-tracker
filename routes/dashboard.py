@@ -10,5 +10,5 @@ dashboard_bp = Blueprint('dashboard', __name__)
 @login_required
 def get_bar():
     sid = request.args.get('id', None)
-    sessions = Session.query.filter_by(owner=current_user).order_by(Session.id).all()
+    sessions = [*current_user.sessions, *current_user.shared_sessions]
     return render_template("bar_graph.html", sid=sid, sessions=sessions)

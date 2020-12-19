@@ -23,9 +23,9 @@
         </div>
         <div class="row row-sessm">
             <div class="col-sm-1 col-sessm">{{ session.id }}</div>
-            <div class="col-sm-2 col-sessm"><input id='name-input' type="text" value="{{ session.name }}" style="width:100%"/></div>
-            <div class="col-sm-3 col-sessm"><textarea id='desc-input'>{{ session.description }}</textarea></div>
-            <div class="col-sm-2 col-sessm">{{ session.f_creation_date }}</div>
+            <div class="col-sm-2 col-sessm"><input class="form-control mw-100" id='name-input' type="text" value="{{ session.name }}" style="width:100%"/></div>
+            <div class="col-sm-3 col-sessm"><textarea class="form-control mw-100" id='desc-input'>{{ session.description }}</textarea></div>
+            <div class="col-sm-2 col-sessm"><span class="">{{ session.f_creation_date }}</span></div>
             <div class="col-sm-2 cliquable col-sessm">
                 {% if session.open %}
                 <input id='toggle-session' type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="secondary" data-on="Open" data-off="Closed" />
@@ -33,8 +33,16 @@
                 <input id='toggle-session' type="checkbox" data-toggle="toggle" data-onstyle="success" data-offstyle="secondary" data-on="Open" data-off="Closed" />
                 {% endif %}
             </div>
-            <div class="col-sm-2 cliquable col-sessm"><a href="/del-session?id={{session.id}}" class="btn btn-primary btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a></div>
+            <div class="col-sm-2 cliquable col-sessm">
+                <a href="/del-session?id={{session.id}}" class="btn btn-danger">
+                    <span class="fa fa-trash"></span>
+                    <span class="d-none d-md-inline">Delete</span>
+                </a>
+            </div>
         </div>
+    </div>
+
+    <div id="sharing" class="container">
     </div>
 
     <div id='session-parts' class="container">
@@ -44,13 +52,14 @@
 
     <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/js/bootstrap4-toggle.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script type="module" src="/static/session_management.js"></script>
-
-
     <!-- <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script> -->
+    
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/js/bootstrap4-toggle.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="module" src="/static/build/session_management.js"></script>
+
+
     <!-- <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
     <!-- <script type="text/babel" src="static/src/session_management.jsx"></script> -->
 {% endblock %}

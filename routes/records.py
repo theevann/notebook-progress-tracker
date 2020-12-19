@@ -6,7 +6,7 @@ from datetime import datetime
 from models.base import db
 from models import Session, SessionPart, Record, User
 
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from flask import Blueprint, render_template, request, redirect, url_for, make_response, jsonify
 from flask_login import login_required, current_user
 
@@ -25,7 +25,7 @@ def show_records():
 @login_required
 def get_records():
     sid = request.args.get('sid', None, type=int)
-    records = Record.query.join(Session).filter_by(owner_id=current_user.id)
+    records = Record.query.join(Session).filter(or_(Session.owner == current_user, Session.shared_users.contains(current_user)))
     if sid is not None:
         records = records.filter(Session.id==sid)
     dict_records = [s.to_dict() for s in records.all()]
@@ -37,9 +37,7 @@ def get_records():
 def del_records():
     data = request.form
     record_ids = data.getlist("record_ids[]")
-    print(record_ids)
     records = Record.query.filter(Record.session_id == Session.id, Session.owner_id == current_user.id, Record.id.in_(record_ids));
-    print(records);
     records.delete(synchronize_session=False)
     db.session.commit()
     return "OK", 200
@@ -116,7 +114,7 @@ def get_record_count_per_question():
     sid = request.args.get('sid', None, type=int)
     if sid is None:
         return "Error: Missing sid", 400
-    elif not db.session.query(Session.id).filter_by(id=sid, owner_id=current_user.id).first():
+    elif not db.session.query(Session.id).filter_by(id=sid).filter(or_(Session.owner == current_user, Session.shared_users.contains(current_user))).first():
         return "Error: No such session", 400
 
     query = db.session.query(Record.question_nb, func.count('*').label('record_count')).filter_by(session_id=sid).group_by(Record.question_nb).all()
