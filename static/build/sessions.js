@@ -10,6 +10,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+import Button from "./button.js";
+
 var SessionList = function (_React$Component) {
     _inherits(SessionList, _React$Component);
 
@@ -46,7 +48,7 @@ var SessionList = function (_React$Component) {
 
             return [React.createElement(SessionHeader, { key: "header", names: names, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 24
+                    lineNumber: 25
                 },
                 __self: this
             }), this.state.sessions.map(function (session) {
@@ -55,7 +57,7 @@ var SessionList = function (_React$Component) {
                         return _this3.update();
                     }, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 27
+                        lineNumber: 28
                     },
                     __self: _this3
                 });
@@ -84,7 +86,7 @@ var SessionHeader = function (_React$Component2) {
                 "div",
                 { className: "row header row-session", __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 37
+                        lineNumber: 38
                     },
                     __self: this
                 },
@@ -93,7 +95,7 @@ var SessionHeader = function (_React$Component2) {
                         "div",
                         { key: name, className: "col-sm col-session", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 39
+                                lineNumber: 40
                             },
                             __self: _this5
                         },
@@ -104,7 +106,7 @@ var SessionHeader = function (_React$Component2) {
                     "div",
                     { className: "col-sm-1 col-session", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 41
+                            lineNumber: 42
                         },
                         __self: this
                     },
@@ -146,7 +148,7 @@ var SessionRow = function (_React$Component3) {
                 "div",
                 { key: "fields", className: "row row-session", __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 62
+                        lineNumber: 63
                     },
                     __self: this
                 },
@@ -155,7 +157,7 @@ var SessionRow = function (_React$Component3) {
                         "div",
                         { key: field, className: "col-sm col-session", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 64
+                                lineNumber: 65
                             },
                             __self: _this7
                         },
@@ -164,45 +166,25 @@ var SessionRow = function (_React$Component3) {
                 }),
                 React.createElement(
                     "div",
-                    { className: "col-sm cliquable col-session", onClick: function onClick() {
+                    { className: "col-sm col-session", onClick: function onClick() {
                             return _this7.toggle_session_state();
                         }, __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 66
+                            lineNumber: 67
                         },
                         __self: this
                     },
-                    session.open ? React.createElement(
-                        "button",
-                        { className: "btn btn-success", __source: {
-                                fileName: _jsxFileName,
-                                lineNumber: 68
-                            },
-                            __self: this
+                    session.open ? React.createElement(Button, { faClass: "unlock", btnClass: "success", text: "Open  ", __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 69
                         },
-                        "Open  ",
-                        React.createElement("i", { "class": "fa fa-unlock", __source: {
-                                fileName: _jsxFileName,
-                                lineNumber: 68
-                            },
-                            __self: this
-                        })
-                    ) : React.createElement(
-                        "button",
-                        { className: "btn btn-secondary", __source: {
-                                fileName: _jsxFileName,
-                                lineNumber: 69
-                            },
-                            __self: this
+                        __self: this
+                    }) : React.createElement(Button, { faClass: "lock", btnClass: "secondary", text: "Closed ", __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 70
                         },
-                        "Closed ",
-                        React.createElement("i", { "class": "fa fa-lock", __source: {
-                                fileName: _jsxFileName,
-                                lineNumber: 69
-                            },
-                            __self: this
-                        })
-                    )
+                        __self: this
+                    })
                 ),
                 React.createElement(
                     "div",
@@ -210,25 +192,16 @@ var SessionRow = function (_React$Component3) {
                             return _this7.edit_session();
                         }, __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 71
+                            lineNumber: 72
                         },
                         __self: this
                     },
-                    React.createElement(
-                        "a",
-                        { href: "#", "class": "btn btn-primary btn-default", title: "Edit", __source: {
-                                fileName: _jsxFileName,
-                                lineNumber: 72
-                            },
-                            __self: this
+                    React.createElement(Button, { faClass: "pencil", btnClass: "primary", title: "Edit", __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 73
                         },
-                        React.createElement("span", { "class": "fa fa-pencil", __source: {
-                                fileName: _jsxFileName,
-                                lineNumber: 72
-                            },
-                            __self: this
-                        })
-                    )
+                        __self: this
+                    })
                 )
             );
         }

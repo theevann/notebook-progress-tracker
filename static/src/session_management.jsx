@@ -1,4 +1,4 @@
-
+import Button from "./button.js"
 
 
 class Sharing extends React.Component {
@@ -42,16 +42,16 @@ class Sharing extends React.Component {
                 return <div className="row my-1">
                     <div className="col-4 col-lg-2 text-center">{user}</div>
                     <div className="col-2 col-lg-1">
-                        <button className="btn btn-danger w-100" onClick={() => this.deleteShare(user)}><span className="fa fa-trash"></span></button>
+                        <Button faClass="trash" btnClass="danger" classes="w-100" title="Cancel share with this user" onClick={() => this.deleteShare(user)} />
                     </div>
                 </div>
             })}
             <div className="row">
                 <div className="col-4 col-lg-2">
-                    <input id='username-input' className="form-control" type="text" style={{"width":"100%"}} />
+                    <input id='username-input' className="form-control w-100" type="text" />
                 </div>
                 <div className="col-2 col-lg-1">
-                    <button className="btn btn-primary w-100" onClick={() => this.createShare()}><span className="fa fa-user-plus"></span></button>
+                    <Button faClass="user-plus" btnClass="primary" classes="w-100" title="Share current session with this user" onClick={() => this.createShare()}/>
                 </div>
             </div>
         </div>

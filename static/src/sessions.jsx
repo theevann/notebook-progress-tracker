@@ -1,4 +1,5 @@
 "use strict";
+import Button from "./button.js";
 
 class SessionList extends React.Component {
     constructor() {
@@ -63,14 +64,13 @@ class SessionRow extends React.Component {
                 {this.props.fields.map(field =>
                     <div key={field} className='col-sm col-session'>{session[field]}</div>
                 )}
-                <div className="col-sm cliquable col-session" onClick={() => this.toggle_session_state()}>
+                <div className="col-sm col-session" onClick={() => this.toggle_session_state()}>
                     {session.open ?
-                    <button className="btn btn-success">Open  <i class="fa fa-unlock"></i></button>:
-                    <button className="btn btn-secondary">Closed <i class="fa fa-lock"></i></button>}
+                    <Button faClass="unlock" btnClass="success" text="Open  " /> :
+                    <Button faClass="lock" btnClass="secondary" text="Closed " />}
                 </div>
                 <div className="col-sm-1 cliquable col-session" onClick={() => this.edit_session()}>
-                    <a href="#" class="btn btn-primary btn-default" title="Edit"><span class="fa fa-pencil"></span></a>
-                    {/* <Button faClass="pencil" btnClass="primary"/> */}
+                    <Button faClass="pencil" btnClass="primary" title="Edit"/>
                 </div>
             </div>
         );

@@ -8,6 +8,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+import Button from "./button.js";
+
 var Sharing = function (_React$Component) {
     _inherits(Sharing, _React$Component);
 
@@ -134,23 +136,14 @@ var Sharing = function (_React$Component) {
                                 },
                                 __self: _this5
                             },
-                            React.createElement(
-                                "button",
-                                { className: "btn btn-danger w-100", onClick: function onClick() {
-                                        return _this5.deleteShare(user);
-                                    }, __source: {
-                                        fileName: _jsxFileName,
-                                        lineNumber: 45
-                                    },
-                                    __self: _this5
+                            React.createElement(Button, { faClass: "trash", btnClass: "danger", classes: "w-100", title: "Cancel share with this user", onClick: function onClick() {
+                                    return _this5.deleteShare(user);
+                                }, __source: {
+                                    fileName: _jsxFileName,
+                                    lineNumber: 45
                                 },
-                                React.createElement("span", { className: "fa fa-trash", __source: {
-                                        fileName: _jsxFileName,
-                                        lineNumber: 45
-                                    },
-                                    __self: _this5
-                                })
-                            )
+                                __self: _this5
+                            })
                         )
                     );
                 }),
@@ -170,7 +163,7 @@ var Sharing = function (_React$Component) {
                             },
                             __self: this
                         },
-                        React.createElement("input", { id: "username-input", className: "form-control", type: "text", style: { "width": "100%" }, __source: {
+                        React.createElement("input", { id: "username-input", className: "form-control w-100", type: "text", __source: {
                                 fileName: _jsxFileName,
                                 lineNumber: 51
                             },
@@ -185,23 +178,14 @@ var Sharing = function (_React$Component) {
                             },
                             __self: this
                         },
-                        React.createElement(
-                            "button",
-                            { className: "btn btn-primary w-100", onClick: function onClick() {
-                                    return _this5.createShare();
-                                }, __source: {
-                                    fileName: _jsxFileName,
-                                    lineNumber: 54
-                                },
-                                __self: this
+                        React.createElement(Button, { faClass: "user-plus", btnClass: "primary", classes: "w-100", title: "Share current session with this user", onClick: function onClick() {
+                                return _this5.createShare();
+                            }, __source: {
+                                fileName: _jsxFileName,
+                                lineNumber: 54
                             },
-                            React.createElement("span", { className: "fa fa-user-plus", __source: {
-                                    fileName: _jsxFileName,
-                                    lineNumber: 54
-                                },
-                                __self: this
-                            })
-                        )
+                            __self: this
+                        })
                     )
                 )
             );
