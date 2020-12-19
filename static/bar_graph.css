@@ -1,0 +1,13 @@
+svg {
+    display: block;
+    margin: auto;
+}
+
+.axis {
+    font-size: 15px;
+}
+
+.bar,
+.axis {
+    fill: rgba(86, 61, 124, 0.45);
+}
