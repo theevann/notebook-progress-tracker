@@ -4,7 +4,7 @@ Name: Notebook Progress Tracker Helper
 Main: main.js
 Link: README.md
 Description: "Add 2 helper buttons for NPT that allow to (1) renumber all send functions in ascending order and (2)
-  replace everything between todo-endtodo comments with a given string and save as new notebook."
+  hide cells, blocks, lines or operand or replace them with a given string and save as new notebook."
 Parameters:
 - name: starting_question_number
   description: "Start numbering questions from:"
@@ -12,9 +12,13 @@ Parameters:
   min: 0
   default: 0
 - name: text_replace_todo
-  description: "What to replace the todos with:"
+  description: "Replace the todos with:"
   input_type: text
   default: "# YOUR CODE HERE"
+- name: clear_outputs
+  description: "Clear outputs in the student version"
+  input_type: checkbox
+  default: true
 - name: file_prefix
   description: "Prefix to add to the name of the new file:"
   input_type: text

@@ -27,6 +27,7 @@ define([
     }
 
     function create_init(){
+        let clear_outputs = !!Jupyter.notebook.config.data.clear_outputs;
         let replace_text = Jupyter.notebook.config.data.text_replace_todo || "# YOUR CODE HERE"
         let prefix = Jupyter.notebook.config.data["file_prefix"] || "";
         let suffix = Jupyter.notebook.config.data["file_suffix"] || "_init_student_version";
@@ -35,9 +36,31 @@ define([
         let model_json = Jupyter.notebook.toJSON();
         let model = { type: "notebook", content: model_json };
 
+        model_json.cells = model_json.cells.filter(c => !c.source.match(/# *HIDE *CELL/));
+
         model_json.cells.forEach(c => {
-            c.source = c.source.replace(/( *)#+ *TO *DO(.|\n)*?(#+ *END *TO *DO)/g,
-                                        (_, s) => `${s}\n${s}#\n${s}#\n${s}${replace_text}\n${s}#\n${s}#\n${s}`);
+            c.source = c.source.replace(/( *)#+ *TODO *BLOCK(.|\n)*?(#+ *END *TODO *BLOCK *)/g,
+                (_, s) => `${s}\n${s}#\n${s}#\n${s}${replace_text}\n${s}#\n${s}#\n${s}`);
+
+            c.source = c.source.replace(/( *)#+ *HIDE *BLOCK(.|\n)*?(#+ *END *HIDE *BLOCK *\n*)/g,
+                (_) => ``);
+
+            c.source = c.source.replace(/( *).*#+ *TODO *LINE */g,
+                (_, s) => `${s}${replace_text}`);
+
+            c.source = c.source.replace(/.*#+ *HIDE *LINE *\n*/g,
+                (_) => ``);
+
+            c.source = c.source.replace(/(.*=).*#+ *TODO *OPERAND */g,
+                (_, left) => `${left} ${replace_text}`);
+
+            c.source = c.source.replace(/(.*=).*#+ *HIDE *OPERAND */g,
+                (_, left) => `${left}`);
+
+            if (c.cell_type === "code" && clear_outputs) {
+                c.execution_count = null;
+                c.outputs = [];
+            }
         });
 
         Jupyter.notebook.contents.save(path, model);
