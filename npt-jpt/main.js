@@ -27,10 +27,11 @@ define([
     }
 
     function create_init(){
-        let clear_outputs = !!Jupyter.notebook.config.data.clear_outputs;
-        let replace_text = Jupyter.notebook.config.data.text_replace_todo || "# YOUR CODE HERE"
-        let prefix = Jupyter.notebook.config.data["file_prefix"] || "";
-        let suffix = Jupyter.notebook.config.data["file_suffix"] || "_init_student_version";
+        let config = Jupyter.notebook.config.data;
+        let clear_outputs = config.clear_outputs;
+        let replace_text = config.text_replace_todo || "# YOUR CODE HERE"
+        let prefix = config.file_prefix || "";
+        let suffix = config.file_suffix || "_init_student_version";
         
         let path = prefix + Jupyter.notebook.notebook_path.replace(".ipynb", suffix + ".ipynb");
         let model_json = Jupyter.notebook.toJSON();
