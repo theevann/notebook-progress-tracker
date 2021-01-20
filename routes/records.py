@@ -2,7 +2,7 @@ import io
 import json
 import pickle
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from models.base import db
 from models import Session, SessionPart, Record, User
@@ -66,6 +66,21 @@ def add_record():
     part = SessionPart.query.filter_by(name=record['part_name'], session_id=session.id).first()
     if not part:
         return "Error: No such part", 400
+
+    ### PROTECTION
+
+    if Record.query.filter_by(part=part, sender_name=record['sender_name']).filter(Record.time > datetime.now() - timedelta(minutes=1)).count() > 20:
+        return "Error: Too many recent records - Try again later", 400
+
+    sender_reccount = Record.query.filter_by(part=part, sender_name=record['sender_name']).count()
+    if sender_reccount >= 50:
+        return "Error: Too many records for this sender", 400
+
+    session_sendercount = db.session.query(Record.sender_name).filter_by(part=part).distinct().count()
+    if sender_reccount == 0 and session_sendercount >= 50:
+        return "Error: Too many different senders in session", 400
+
+    ### PREPARING DATA
 
     if record['type'] == "list":
         data = pickle.dumps(json.loads(record['data']))
