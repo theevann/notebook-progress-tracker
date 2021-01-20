@@ -1,4 +1,4 @@
-var _jsxFileName = "static/src/button.jsx";
+var _jsxFileName = "static/src/Button.jsx";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -27,6 +27,7 @@ var Button = function (_React$Component) {
             var title = this.props.title || "";
             var classes = this.props.classes || "";
             var faClass = this.props.faClass || "";
+            var faDisplay = this.props.faHideBig ? "d-md-none" : "";
             var btnClass = this.props.btnClass || "primary";
             var onClick = this.props.onClick || function () {};
 
@@ -34,7 +35,7 @@ var Button = function (_React$Component) {
                 "button",
                 { onClick: onClick, className: "btn btn-" + btnClass + " " + classes, title: title, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 15
+                        lineNumber: 16
                     },
                     __self: this
                 },
@@ -42,15 +43,15 @@ var Button = function (_React$Component) {
                     "span",
                     { "class": "d-none d-md-inline", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 16
+                            lineNumber: 17
                         },
                         __self: this
                     },
                     text
                 ),
-                faClass !== "" ? React.createElement("i", { className: "fa fa-" + faClass, __source: {
+                faClass !== "" ? React.createElement("span", { style: { lineHeight: 1.5 }, className: "fa fa-" + faClass + " d-inline " + faDisplay, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 17
+                        lineNumber: 18
                     },
                     __self: this
                 }) : ""
