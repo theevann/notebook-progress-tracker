@@ -6,15 +6,37 @@ sendcode_bp = Blueprint('sendcode', __name__)
 
 @sendcode_bp.route('/get-send-code', methods=["GET"])
 def get_send_code():
-    return """
+    return f"""
 import io
+import sys
 import json
 import requests
 import inspect
 
-def get_binary_image(plt_obj):
+from IPython.core.magics.code import extract_symbols
+
+def _npt_get_class_code(cls):
+    cell_code = "".join(inspect.linecache.getlines(_npt_get_file(cls)))
+    class_code = extract_symbols(cell_code, cls.__name__)[0][0]
+    return class_code
+
+def _npt_get_file(object):
+    if not inspect.isclass(object):
+        return inspect.getfile(object)
+    
+    if hasattr(object, '__module__'):
+        object_ = sys.modules.get(object.__module__)
+        if hasattr(object_, '__file__'):
+            return object_.__file__
+    
+    for name, member in inspect.getmembers(object):
+        if inspect.isfunction(member) and object.__qualname__ + '.' + member.__name__ == member.__qualname__:
+            return inspect.getfile(member)
+    raise TypeError('Source for {{!r}} not found'.format(object))
+
+def _npt_get_binary_image(img, save_fn):
     with io.BytesIO() as buffer:
-        plt_obj.savefig(buffer, format='jpeg', quality=20, dpi=70)
+        getattr(img, save_fn)(buffer, format='jpeg', quality=20)
         return buffer.getvalue()
 
 def send(data, q_nb):
@@ -22,7 +44,7 @@ def send(data, q_nb):
         print('Variable npt_config is not defined')
         return
 
-    url = '{0}add-record'
+    url = '{request.url_root}add-record'
     file = {{}}
     form = {{
         'question_nb': q_nb,
@@ -33,25 +55,44 @@ def send(data, q_nb):
     }}
 
     datatype = type(data).__name__
-    if datatype in ["int", "float"]:
-        form['type'] = "ndarray"
-        form['data'] = json.dumps([data])
-    elif datatype == "ndarray":
-        form['type'] = datatype
-        form['data'] = json.dumps(data.tolist())
-    elif datatype == 'function':
-        form['type'] = datatype
-        form['data'] = inspect.getsource(data)
-    elif datatype == 'module' and data.__name__ == 'matplotlib.pyplot':
-        form['type'] = 'image'
-        file['file'] = get_binary_image(data)
-    else:
+    if datatype == 'str':
         form['type'] = datatype
         form['data'] = data
+    elif datatype in ['int', 'float']:
+        form['type'] = 'ndarray'
+        form['data'] = json.dumps([data])
+    elif datatype == 'list':
+        form['type'] = datatype
+        form['data'] = json.dumps(data)
+    elif datatype == 'ndarray':
+        form['type'] = datatype
+        form['data'] = json.dumps(data.tolist())
+    elif datatype == 'Tensor':
+        form['type'] = 'ndarray'
+        form['data'] = json.dumps(data.numpy().tolist())
+    elif datatype == 'function':
+        form['type'] = 'code'
+        form['data'] = inspect.getsource(data)
+    elif inspect.isclass(data):
+        form['type'] = 'code'
+        form['data'] = _npt_get_class_code(data)
+    elif "torch.nn.modules" in type(data).__module__:
+        form['type'] = 'code'
+        form['data'] = str(data)
+    elif datatype == 'Figure' or (datatype == 'module' and data.__name__ == 'matplotlib.pyplot'):
+        form['type'] = 'image'
+        file['file'] = _npt_get_binary_image(data, "savefig")
+    elif datatype == 'JpegImageFile':
+        form['type'] = 'image'
+        file['file'] = _npt_get_binary_image(data, "save")
+
+    else:
+        print('Datatype not supported')
+        return
 
     response = requests.post(url, data=form, files=file)
 
     if npt_config.get('log', False):
         print(response.content.decode())
     return response
-""".format(request.url_root)
+"""

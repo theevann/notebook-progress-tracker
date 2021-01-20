@@ -1,5 +1,5 @@
 "use strict";
-import Button from "./button.js";
+import Button from "./Button.js";
 
 class SessionList extends React.Component {
     constructor() {
@@ -105,7 +105,7 @@ class SharedSessionRow extends React.Component {
 const domContainer = document.querySelector('#session-list');
 let session_list = ReactDOM.render(React.createElement(SessionList), domContainer);
 
-var add_session = function (form) {
+window.add_session = function (form) {
     $.post("/add-session", $(form).serialize(), () => session_list.update.call(session_list));
     form.reset();
 };

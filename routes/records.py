@@ -1,5 +1,6 @@
 import io
 import json
+import pickle
 import numpy as np
 from datetime import datetime
 
@@ -66,19 +67,17 @@ def add_record():
     if not part:
         return "Error: No such part", 400
 
-    if record['type'] == "ndarray":
-        data = np.array(json.loads(record['data'])).dumps()
-    elif record['type'] == "str":
-        data = str.encode(record['data'])
-    elif record['type'] == "function":
+    if record['type'] == "list":
+        data = pickle.dumps(json.loads(record['data']))
+    elif record['type'] == "ndarray":
+        data = np.array(json.loads(record['data'])).dumps() #TODO: pickle dump only as list, as numpy arrays take more space
+    elif record['type'] in ["str","code"]:
         data = str.encode(record['data'])
     elif record['type'] == "image":
         buffer = io.BytesIO()
         file.save(buffer)
         data = buffer.getvalue()
         buffer.close()
-    elif record['type'] == "list":
-        data = record['data']
     else:
         return "Error: DataType is not supported", 400
 

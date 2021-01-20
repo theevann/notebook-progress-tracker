@@ -1,5 +1,5 @@
-import io
 import pytz
+import pickle
 from base64 import b64encode
 from datetime import datetime
 import numpy as np
@@ -8,7 +8,7 @@ from .base import db
 from sqlalchemy.orm import relationship
 
 
-paris = pytz.timezone('Europe/Paris')
+paris = pytz.timezone("Europe/Paris")
 np.set_printoptions(4)
 
 
@@ -17,8 +17,8 @@ class Record(db.Model):
     __tablename__ = "records"
 
     id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
-    part_id = db.Column(db.Integer, db.ForeignKey('session_parts.id'))
+    session_id = db.Column(db.Integer, db.ForeignKey("sessions.id"))
+    part_id = db.Column(db.Integer, db.ForeignKey("session_parts.id"))
     sender_name = db.Column(db.String(100))
     sender_ip = db.Column(db.String(15))
     question_nb = db.Column(db.Integer)
@@ -32,19 +32,34 @@ class Record(db.Model):
 
     def to_dict(self):
         # fields = ['id', 'session_id', 'sender_name', 'sender_ip', 'question_nb', 'question_name', 'f_time', 'type', 'f_data']
-        fields = ['id', 'session_id', 'sender_name', 'sender_ip', 'question_nb', 'f_time', 'type', 'f_data']
+        fields = [
+            "id",
+            "session_id",
+            "sender_name",
+            "sender_ip",
+            "question_nb",
+            "f_time",
+            "type",
+            "f_data",
+        ]
         return {f: getattr(self, f) for f in fields}
 
     def format_data(self):
         data = "Not Supported"
-        if self.type == 'ndarray':
-            data = format_array(np.load(io.BytesIO(self.data), allow_pickle=True))
-        elif self.type == 'str':
-            data = self.data.decode('utf-8')
-        elif self.type == 'function':
-            data = self.data.decode('utf-8')
-        elif self.type == 'image':
-            data = b64encode(self.data).decode()
+        try:
+            if self.type == "list":
+                data = pickle.loads(self.data)
+            elif self.type == "ndarray":
+                data = format_array(pickle.loads(self.data))
+            elif self.type == "str":
+                data = self.data.decode("utf-8")
+            elif self.type == "code":
+                data = self.data.decode("utf-8")
+            elif self.type == "image":
+                data = b64encode(self.data).decode()
+        except Exception as e:
+            data = "Data could not be loaded"
+            print(e)
         return data
 
     @property
@@ -58,12 +73,29 @@ class Record(db.Model):
 
 
 def format_array(a):
-    if len(a.shape) > 2:
-        return str(a)
     if a.size == 1:
-        return '$$%s$$' % str(a.flatten()[0])
-    lines = str(a).replace('[', '').replace(']', '').splitlines()
-    rv = [r'\begin{bmatrix}']
-    rv += ['  ' + ' & '.join(l.split()) + r'\\' for l in lines]
-    rv +=  [r'\end{bmatrix}']
-    return '\n'.join(rv)
+        return str(a.item())
+    
+    if a.ndim <= 2:
+        lines = str(a).replace("[", "").replace("]", "").splitlines()
+        rv = [r"\begin{bmatrix}"]
+        rv += ["  " + " & ".join(l.split()) + r"\\" for l in lines]
+        rv += [r"\end{bmatrix}"]
+        return "\n".join(rv)
+    
+    return r"\begin{bmatrix}" + \
+           "\n".join([format_array(a_i) + r"\\" for a_i in a]) + \
+           r"\end{bmatrix}" 
+
+
+
+def format_array_old(a):
+    import re
+    repl = lambda s: " & ".join(re.sub(" +", " ", s.group()).split(" "))
+
+    out = (
+        re.sub(r"(\d+(?:\.\d+)?)( +(\d+(?:\.\d+)?))*", repl, str(a))
+        .replace("[", r"\begin{bmatrix} ")
+        .replace("]", r" \end{bmatrix} \\ ")
+    )
+    return out

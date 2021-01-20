@@ -10,7 +10,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-import Button from "./button.js";
+import Button from "./Button.js";
 
 var SessionList = function (_React$Component) {
     _inherits(SessionList, _React$Component);
@@ -326,7 +326,7 @@ var SharedSessionRow = function (_React$Component4) {
 var domContainer = document.querySelector('#session-list');
 var session_list = ReactDOM.render(React.createElement(SessionList), domContainer);
 
-var add_session = function add_session(form) {
+window.add_session = function (form) {
     $.post("/add-session", $(form).serialize(), function () {
         return session_list.update.call(session_list);
     });

@@ -8,7 +8,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-import Button from "./button.js";
+import Button from "./Button.js";
+import ConfirmModal from "./ConfirmModal.js";
 
 var Sharing = function (_React$Component) {
     _inherits(Sharing, _React$Component);
@@ -70,7 +71,7 @@ var Sharing = function (_React$Component) {
                 {
                     __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 35
+                        lineNumber: 36
                     },
                     __self: this
                 },
@@ -78,7 +79,7 @@ var Sharing = function (_React$Component) {
                     "div",
                     { className: "row mt-3", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 36
+                            lineNumber: 37
                         },
                         __self: this
                     },
@@ -86,7 +87,7 @@ var Sharing = function (_React$Component) {
                         "div",
                         { className: "col-6 col-lg-3", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 37
+                                lineNumber: 38
                             },
                             __self: this
                         },
@@ -95,14 +96,14 @@ var Sharing = function (_React$Component) {
                             {
                                 __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 38
+                                    lineNumber: 39
                                 },
                                 __self: this
                             },
                             "Sharing ",
                             React.createElement("span", { className: "fa fa-users", __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 38
+                                    lineNumber: 39
                                 },
                                 __self: this
                             })
@@ -114,7 +115,7 @@ var Sharing = function (_React$Component) {
                         "div",
                         { className: "row my-1", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 42
+                                lineNumber: 43
                             },
                             __self: _this5
                         },
@@ -122,7 +123,7 @@ var Sharing = function (_React$Component) {
                             "div",
                             { className: "col-4 col-lg-2 text-center", __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 43
+                                    lineNumber: 44
                                 },
                                 __self: _this5
                             },
@@ -132,18 +133,27 @@ var Sharing = function (_React$Component) {
                             "div",
                             { className: "col-2 col-lg-1", __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 44
-                                },
-                                __self: _this5
-                            },
-                            React.createElement(Button, { faClass: "trash", btnClass: "danger", classes: "w-100", title: "Cancel share with this user", onClick: function onClick() {
-                                    return _this5.deleteShare(user);
-                                }, __source: {
-                                    fileName: _jsxFileName,
                                     lineNumber: 45
                                 },
                                 __self: _this5
-                            })
+                            },
+                            React.createElement(
+                                ConfirmModal,
+                                { onClick: function onClick() {
+                                        return _this5.deleteShare(user);
+                                    }, textBody: "Are you sure to cancel this share ?", __source: {
+                                        fileName: _jsxFileName,
+                                        lineNumber: 46
+                                    },
+                                    __self: _this5
+                                },
+                                React.createElement(Button, { faClass: "trash", btnClass: "danger", classes: "w-100", title: "Cancel share with this user", __source: {
+                                        fileName: _jsxFileName,
+                                        lineNumber: 47
+                                    },
+                                    __self: _this5
+                                })
+                            )
                         )
                     );
                 }),
@@ -151,7 +161,7 @@ var Sharing = function (_React$Component) {
                     "div",
                     { className: "row", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 49
+                            lineNumber: 52
                         },
                         __self: this
                     },
@@ -159,13 +169,13 @@ var Sharing = function (_React$Component) {
                         "div",
                         { className: "col-4 col-lg-2", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 50
+                                lineNumber: 53
                             },
                             __self: this
                         },
                         React.createElement("input", { id: "username-input", className: "form-control w-100", type: "text", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 51
+                                lineNumber: 54
                             },
                             __self: this
                         })
@@ -174,7 +184,7 @@ var Sharing = function (_React$Component) {
                         "div",
                         { className: "col-2 col-lg-1", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 53
+                                lineNumber: 56
                             },
                             __self: this
                         },
@@ -182,7 +192,7 @@ var Sharing = function (_React$Component) {
                                 return _this5.createShare();
                             }, __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 54
+                                lineNumber: 57
                             },
                             __self: this
                         })
@@ -241,7 +251,7 @@ var SessionParts = function (_React$Component2) {
                     "div",
                     { className: "row row-sessm", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 95
+                            lineNumber: 98
                         },
                         __self: _this8
                     },
@@ -249,7 +259,7 @@ var SessionParts = function (_React$Component2) {
                         "div",
                         { className: "col-sm-1 col-sessm", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 96
+                                lineNumber: 99
                             },
                             __self: _this8
                         },
@@ -259,7 +269,7 @@ var SessionParts = function (_React$Component2) {
                         "div",
                         { className: "col-sm-2 col-sessm", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 97
+                                lineNumber: 100
                             },
                             __self: _this8
                         },

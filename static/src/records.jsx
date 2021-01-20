@@ -1,5 +1,7 @@
 "use strict";
 
+import Button from "./Button.js"
+import ConfirmModal from "./ConfirmModal.js"
 class RecordsList extends React.Component {
     constructor() {
         super();
@@ -169,25 +171,10 @@ class RecordsSearchbar extends React.Component {
                         {
                         is_sharing ?
                         "" :
-                        <button className='btn btn-danger' data-toggle="modal" data-target="#confirm-delete">Delete</button>
+                        <ConfirmModal onClick={this.props.delete} textBody="Do you want to delete the currently filtered records ?" >
+                                    <Button btnClass="danger" text="Delete" title="Delete visible records" faClass="trash" faHideBig={true} />
+                        </ConfirmModal>
                         }
-                    </div>
-                </div>
-
-                <div className="modal fade" id="confirm-delete" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            {/* <div className="modal-header">
-                                        Confirm
-                            </div> */}
-                            <div className="modal-body">
-                                Do you want to delete the currently filtered records ?
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
-                                <button onClick={this.props.delete} type="button" className="btn btn-danger btn-ok" data-dismiss="modal">Delete</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -223,12 +210,15 @@ class RecordsRow extends React.Component {
 
         if (record.type == 'image') {
             data = <img className="image" src={`data:;base64,${data}`} style={{ 'maxWidth': '100%', 'maxHeight':'100%' }} />;
+        } else if (record.type == 'ndarray') {
+            data = "$$ " + data + " $$";
         } else if (record.type == 'ndarray' && !data.startsWith("\\begin")) {
-            data = data.split('\n').map((text, key) => <span key={key}>{text}<br/></span>);
-        } else if (record.type == 'function') {
-            data = <pre><code className="" data-language="python">{data}</code></pre>
+            data = data.split('\n').map((text, key) => <span key={key}>{text}<br/></span>); //TODO
+        } else if (['code', 'list'].includes(record.type)) {
+            if (record.type === 'list') data = JSON.stringify(data, null);
+            data = <pre><code className="" data-language="python">{data}</code></pre>;
         } else {
-            data = <p>{data}</p>
+            data = <p>{data}</p>;
         }
 
         return (

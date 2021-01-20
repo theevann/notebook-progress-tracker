@@ -2,7 +2,7 @@
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _jsxFileName = 'static/src/records.jsx';
+var _jsxFileName = "static/src/records.jsx";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -11,6 +11,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+import Button from "./Button.js";
+import ConfirmModal from "./ConfirmModal.js";
 
 var RecordsList = function (_React$Component) {
     _inherits(RecordsList, _React$Component);
@@ -36,7 +39,7 @@ var RecordsList = function (_React$Component) {
     }
 
     _createClass(RecordsList, [{
-        key: 'getSession',
+        key: "getSession",
         value: function getSession(session_id) {
             var session = session_id && this.state.sessions.find(function (s) {
                 return s.id == session_id;
@@ -44,7 +47,7 @@ var RecordsList = function (_React$Component) {
             return session;
         }
     }, {
-        key: 'componentDidMount',
+        key: "componentDidMount",
         value: function componentDidMount() {
             var _this2 = this;
 
@@ -56,19 +59,19 @@ var RecordsList = function (_React$Component) {
             if (sid !== null) this.setState({ "session_id": sid }, this.update);
         }
     }, {
-        key: 'componentDidUpdate',
+        key: "componentDidUpdate",
         value: function componentDidUpdate(prevProps, prevState) {
             MathJax && MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
             Rainbow.color();
         }
     }, {
-        key: 'changeSession',
+        key: "changeSession",
         value: function changeSession(sid) {
             localStorage.setItem("sid", sid);
             this.setState({ "session_id": sid }, this.update);
         }
     }, {
-        key: 'update',
+        key: "update",
         value: function update() {
             var _this3 = this;
 
@@ -78,14 +81,14 @@ var RecordsList = function (_React$Component) {
             });
         }
     }, {
-        key: 'onFilterChange',
+        key: "onFilterChange",
         value: function onFilterChange(name, value) {
             var filters = this.state.filters;
             filters[name] = value;
             this.setState({ 'filters': filters }, this.updateVisibleRecords);
         }
     }, {
-        key: 'updateVisibleRecords',
+        key: "updateVisibleRecords",
         value: function updateVisibleRecords() {
             var filters = this.state.filters;
             var visible_records = [];
@@ -106,7 +109,7 @@ var RecordsList = function (_React$Component) {
             this.setState({ 'visible_records': visible_records });
         }
     }, {
-        key: 'clearFilters',
+        key: "clearFilters",
         value: function clearFilters(name, value) {
             var filters = {
                 'sender_name': '',
@@ -116,7 +119,7 @@ var RecordsList = function (_React$Component) {
             this.setState({ 'filters': filters }, this.updateVisibleRecords);
         }
     }, {
-        key: 'deleteRecords',
+        key: "deleteRecords",
         value: function deleteRecords() {
             $.ajax({
                 type: 'DELETE',
@@ -128,21 +131,21 @@ var RecordsList = function (_React$Component) {
             });
         }
     }, {
-        key: 'toggleName',
+        key: "toggleName",
         value: function toggleName() {
             this.setState({
                 name_visible: !this.state.name_visible
             });
         }
     }, {
-        key: 'render',
+        key: "render",
         value: function render() {
             var _this4 = this;
 
             var records = this.state.visible_records.map(function (record) {
-                return React.createElement(RecordsRow, { key: record.id + '-' + record.f_time, record: record, update: _this4.update.bind(_this4), name_visible: _this4.state.name_visible, __source: {
+                return React.createElement(RecordsRow, { key: record.id + "-" + record.f_time, record: record, update: _this4.update.bind(_this4), name_visible: _this4.state.name_visible, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 106
+                        lineNumber: 108
                     },
                     __self: _this4
                 });
@@ -150,40 +153,40 @@ var RecordsList = function (_React$Component) {
 
             var session_id = this.state.session_id;
             var session = this.getSession(session_id);
-            var session_name = session && '[' + session_id + '] ' + session.name || "Choose a session";
+            var session_name = session && "[" + session_id + "] " + session.name || "Choose a session";
 
             return [React.createElement(
-                'div',
-                { key: 'session_dropdown', className: 'row dropdown mb-2', style: { display: "block", textAlign: "center" }, __source: {
+                "div",
+                { key: "session_dropdown", className: "row dropdown mb-2", style: { display: "block", textAlign: "center" }, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 114
+                        lineNumber: 116
                     },
                     __self: this
                 },
                 React.createElement(
-                    'button',
-                    { className: 'btn btn-secondary dropdown-toggle', type: 'button', id: 'dropdownMenuButton', 'data-toggle': 'dropdown', 'aria-haspopup': 'true', 'aria-expanded': 'false', __source: {
+                    "button",
+                    { className: "btn btn-secondary dropdown-toggle", type: "button", id: "dropdownMenuButton", "data-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "false", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 115
+                            lineNumber: 117
                         },
                         __self: this
                     },
                     session_name
                 ),
                 React.createElement(
-                    'div',
+                    "div",
                     {
                         __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 118
+                            lineNumber: 120
                         },
                         __self: this
                     },
                     React.createElement(
-                        'div',
-                        { className: 'dropdown-menu', 'aria-labelledby': 'dropdownMenuButton', __source: {
+                        "div",
+                        { className: "dropdown-menu", "aria-labelledby": "dropdownMenuButton", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 119
+                                lineNumber: 121
                             },
                             __self: this
                         },
@@ -191,46 +194,46 @@ var RecordsList = function (_React$Component) {
                             var id = _ref.id,
                                 name = _ref.name;
                             return React.createElement(
-                                'a',
-                                { key: id, className: 'dropdown-item', href: '#', onClick: function onClick() {
+                                "a",
+                                { key: id, className: "dropdown-item", href: "#", onClick: function onClick() {
                                         return _this4.changeSession(id);
                                     }, __source: {
                                         fileName: _jsxFileName,
-                                        lineNumber: 121
+                                        lineNumber: 123
                                     },
                                     __self: _this4
                                 },
-                                '[',
+                                "[",
                                 id,
-                                '] ',
+                                "] ",
                                 name
                             );
                         })
                     )
                 )
-            ), React.createElement(RecordsHeader, { key: 'header', toggleName: this.toggleName.bind(this), name_visible: this.state.name_visible, __source: {
+            ), React.createElement(RecordsHeader, { key: "header", toggleName: this.toggleName.bind(this), name_visible: this.state.name_visible, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 126
+                    lineNumber: 128
                 },
                 __self: this
-            }), React.createElement(RecordsSearchbar, { key: 'searchbar', session: this.getSession(this.state.session_id), update: this.update.bind(this), 'delete': this.deleteRecords.bind(this), clearFilters: this.clearFilters.bind(this), onFilterChange: this.onFilterChange.bind(this), __source: {
+            }), React.createElement(RecordsSearchbar, { key: "searchbar", session: this.getSession(this.state.session_id), update: this.update.bind(this), "delete": this.deleteRecords.bind(this), clearFilters: this.clearFilters.bind(this), onFilterChange: this.onFilterChange.bind(this), __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 127
+                    lineNumber: 129
                 },
                 __self: this
             }), React.createElement(
-                'div',
-                { className: 'row', style: { overflowY: "auto" }, __source: {
+                "div",
+                { className: "row", style: { overflowY: "auto" }, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 128
+                        lineNumber: 130
                     },
                     __self: this
                 },
                 React.createElement(
-                    'div',
-                    { className: 'col', __source: {
+                    "div",
+                    { className: "col", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 130
+                            lineNumber: 132
                         },
                         __self: this
                     },
@@ -256,12 +259,12 @@ var RecordsSearchbar = function (_React$Component2) {
     }
 
     _createClass(RecordsSearchbar, [{
-        key: 'handleFilterTextChange',
+        key: "handleFilterTextChange",
         value: function handleFilterTextChange(e) {
             this.props.onFilterChange(e.target.name, e.target.value);
         }
     }, {
-        key: 'clearFilters',
+        key: "clearFilters",
         value: function clearFilters() {
             document.querySelectorAll(".search input").forEach(function (input) {
                 return input.value = '';
@@ -269,26 +272,26 @@ var RecordsSearchbar = function (_React$Component2) {
             this.props.clearFilters();
         }
     }, {
-        key: 'render',
+        key: "render",
         value: function render() {
             var _this6 = this;
 
             var fields = [['Name', 'sender_name'], ['Date', 'f_time'], ['Question nb', 'question_nb']];
             var is_sharing = this.props.session && this.props.session.sharing;
             return React.createElement(
-                'div',
+                "div",
                 {
                     __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 159
+                        lineNumber: 161
                     },
                     __self: this
                 },
                 React.createElement(
-                    'div',
-                    { className: 'row search row-record', __source: {
+                    "div",
+                    { className: "row search row-record", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 160
+                            lineNumber: 162
                         },
                         __self: this
                     },
@@ -298,124 +301,63 @@ var RecordsSearchbar = function (_React$Component2) {
                             field = _ref3[1];
 
                         return React.createElement(
-                            'div',
-                            { key: name, className: 'col-sm col-record', __source: {
+                            "div",
+                            { key: name, className: "col-sm col-record", __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 162
+                                    lineNumber: 164
                                 },
                                 __self: _this6
                             },
-                            React.createElement('input', { type: 'text', name: field, placeholder: name, style: { 'width': '100%' }, onChange: _this6.handleFilterTextChange.bind(_this6), __source: {
+                            React.createElement("input", { type: "text", name: field, placeholder: name, style: { 'width': '100%' }, onChange: _this6.handleFilterTextChange.bind(_this6), __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 163
+                                    lineNumber: 165
                                 },
                                 __self: _this6
                             })
                         );
                     }),
                     React.createElement(
-                        'div',
-                        { className: 'col-sm-5 col-record', __source: {
+                        "div",
+                        { className: "col-sm-5 col-record", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 166
+                                lineNumber: 168
                             },
                             __self: this
                         },
                         React.createElement(
-                            'button',
-                            { onClick: this.clearFilters.bind(this), className: 'btn btn-secondary', __source: {
+                            "button",
+                            { onClick: this.clearFilters.bind(this), className: "btn btn-secondary", __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 167
+                                    lineNumber: 169
                                 },
                                 __self: this
                             },
-                            'Clear Filters'
+                            "Clear Filters"
                         ),
                         React.createElement(
-                            'button',
-                            { onClick: this.props.update, className: 'btn btn-secondary', __source: {
+                            "button",
+                            { onClick: this.props.update, className: "btn btn-secondary", __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 168
+                                    lineNumber: 170
                                 },
                                 __self: this
                             },
-                            'Reload'
+                            "Reload"
                         ),
                         is_sharing ? "" : React.createElement(
-                            'button',
-                            { className: 'btn btn-danger', 'data-toggle': 'modal', 'data-target': '#confirm-delete', __source: {
+                            ConfirmModal,
+                            { onClick: this.props.delete, textBody: "Do you want to delete the currently filtered records ?", __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 172
+                                    lineNumber: 174
                                 },
                                 __self: this
                             },
-                            'Delete'
-                        )
-                    )
-                ),
-                React.createElement(
-                    'div',
-                    { className: 'modal fade', id: 'confirm-delete', tabIndex: '-1', role: 'dialog', 'aria-labelledby': 'myModalLabel', 'aria-hidden': 'true', __source: {
-                            fileName: _jsxFileName,
-                            lineNumber: 177
-                        },
-                        __self: this
-                    },
-                    React.createElement(
-                        'div',
-                        { className: 'modal-dialog', __source: {
-                                fileName: _jsxFileName,
-                                lineNumber: 178
-                            },
-                            __self: this
-                        },
-                        React.createElement(
-                            'div',
-                            { className: 'modal-content', __source: {
+                            React.createElement(Button, { btnClass: "danger", text: "Delete", title: "Delete visible records", faClass: "trash", faHideBig: true, __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 179
+                                    lineNumber: 175
                                 },
                                 __self: this
-                            },
-                            React.createElement(
-                                'div',
-                                { className: 'modal-body', __source: {
-                                        fileName: _jsxFileName,
-                                        lineNumber: 183
-                                    },
-                                    __self: this
-                                },
-                                'Do you want to delete the currently filtered records ?'
-                            ),
-                            React.createElement(
-                                'div',
-                                { className: 'modal-footer', __source: {
-                                        fileName: _jsxFileName,
-                                        lineNumber: 186
-                                    },
-                                    __self: this
-                                },
-                                React.createElement(
-                                    'button',
-                                    { type: 'button', className: 'btn btn-default', 'data-dismiss': 'modal', __source: {
-                                            fileName: _jsxFileName,
-                                            lineNumber: 187
-                                        },
-                                        __self: this
-                                    },
-                                    'Cancel'
-                                ),
-                                React.createElement(
-                                    'button',
-                                    { onClick: this.props.delete, type: 'button', className: 'btn btn-danger btn-ok', 'data-dismiss': 'modal', __source: {
-                                            fileName: _jsxFileName,
-                                            lineNumber: 188
-                                        },
-                                        __self: this
-                                    },
-                                    'Delete'
-                                )
-                            )
+                            })
                         )
                     )
                 )
@@ -436,41 +378,41 @@ var RecordsHeader = function (_React$Component3) {
     }
 
     _createClass(RecordsHeader, [{
-        key: 'render',
+        key: "render",
         value: function render() {
             var _this8 = this;
 
             var names = ['Date', 'Question number'];
             return React.createElement(
-                'div',
-                { className: 'row header row-record', __source: {
+                "div",
+                { className: "row header row-record", __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 203
+                        lineNumber: 190
                     },
                     __self: this
                 },
                 React.createElement(
-                    'div',
-                    { className: 'col-sm col-record', __source: {
+                    "div",
+                    { className: "col-sm col-record", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 204
+                            lineNumber: 191
                         },
                         __self: this
                     },
-                    'Name  ',
-                    React.createElement('i', { onClick: this.props.toggleName, className: "fa fa-eye" + (this.props.name_visible ? "" : "-slash"), style: { "fontSize": "15px" }, __source: {
+                    "Name  ",
+                    React.createElement("i", { onClick: this.props.toggleName, className: "fa fa-eye" + (this.props.name_visible ? "" : "-slash"), style: { "fontSize": "15px" }, __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 204
+                            lineNumber: 191
                         },
                         __self: this
                     })
                 ),
                 names.map(function (name) {
                     return React.createElement(
-                        'div',
-                        { key: name, className: 'col-sm col-record', __source: {
+                        "div",
+                        { key: name, className: "col-sm col-record", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 206
+                                lineNumber: 193
                             },
                             __self: _this8
                         },
@@ -478,14 +420,14 @@ var RecordsHeader = function (_React$Component3) {
                     );
                 }),
                 React.createElement(
-                    'div',
-                    { className: 'col-sm-5 col-record', __source: {
+                    "div",
+                    { className: "col-sm-5 col-record", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 208
+                            lineNumber: 195
                         },
                         __self: this
                     },
-                    'Answer'
+                    "Answer"
                 )
             );
         }
@@ -507,7 +449,7 @@ var RecordsRow = function (_React$Component4) {
     }
 
     _createClass(RecordsRow, [{
-        key: 'render',
+        key: "render",
         value: function render() {
             var _this10 = this;
 
@@ -516,47 +458,50 @@ var RecordsRow = function (_React$Component4) {
             var data = record.f_data;
 
             if (record.type == 'image') {
-                data = React.createElement('img', { className: 'image', src: 'data:;base64,' + data, style: { 'maxWidth': '100%', 'maxHeight': '100%' }, __source: {
+                data = React.createElement("img", { className: "image", src: "data:;base64," + data, style: { 'maxWidth': '100%', 'maxHeight': '100%' }, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 225
+                        lineNumber: 212
                     },
                     __self: this
                 });
+            } else if (record.type == 'ndarray') {
+                data = "$$ " + data + " $$";
             } else if (record.type == 'ndarray' && !data.startsWith("\\begin")) {
                 data = data.split('\n').map(function (text, key) {
                     return React.createElement(
-                        'span',
+                        "span",
                         { key: key, __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 227
+                                lineNumber: 216
                             },
                             __self: _this10
                         },
                         text,
-                        React.createElement('br', {
+                        React.createElement("br", {
                             __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 227
+                                lineNumber: 216
                             },
                             __self: _this10
                         })
                     );
-                });
-            } else if (record.type == 'function') {
+                }); //TODO
+            } else if (['code', 'list'].includes(record.type)) {
+                if (record.type === 'list') data = JSON.stringify(data, null);
                 data = React.createElement(
-                    'pre',
+                    "pre",
                     {
                         __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 229
+                            lineNumber: 219
                         },
                         __self: this
                     },
                     React.createElement(
-                        'code',
-                        { className: '', 'data-language': 'python', __source: {
+                        "code",
+                        { className: "", "data-language": "python", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 229
+                                lineNumber: 219
                             },
                             __self: this
                         },
@@ -565,11 +510,11 @@ var RecordsRow = function (_React$Component4) {
                 );
             } else {
                 data = React.createElement(
-                    'p',
+                    "p",
                     {
                         __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 231
+                            lineNumber: 221
                         },
                         __self: this
                     },
@@ -578,18 +523,18 @@ var RecordsRow = function (_React$Component4) {
             }
 
             return React.createElement(
-                'div',
-                { className: 'row row-record', __source: {
+                "div",
+                { className: "row row-record", __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 235
+                        lineNumber: 225
                     },
                     __self: this
                 },
                 React.createElement(
-                    'div',
-                    { className: 'col-sm col-record', __source: {
+                    "div",
+                    { className: "col-sm col-record", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 236
+                            lineNumber: 226
                         },
                         __self: this
                     },
@@ -597,19 +542,19 @@ var RecordsRow = function (_React$Component4) {
                 ),
                 fields.map(function (field) {
                     return React.createElement(
-                        'div',
-                        { key: field, className: 'col-sm col-record', __source: {
+                        "div",
+                        { key: field, className: "col-sm col-record", __source: {
                                 fileName: _jsxFileName,
-                                lineNumber: 240
+                                lineNumber: 230
                             },
                             __self: _this10
                         },
                         React.createElement(
-                            'p',
+                            "p",
                             {
                                 __source: {
                                     fileName: _jsxFileName,
-                                    lineNumber: 241
+                                    lineNumber: 231
                                 },
                                 __self: _this10
                             },
@@ -618,10 +563,10 @@ var RecordsRow = function (_React$Component4) {
                     );
                 }),
                 React.createElement(
-                    'div',
-                    { className: 'col-sm-5 col-record', __source: {
+                    "div",
+                    { className: "col-sm-5 col-record", __source: {
                             fileName: _jsxFileName,
-                            lineNumber: 244
+                            lineNumber: 234
                         },
                         __self: this
                     },
