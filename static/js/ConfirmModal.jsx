@@ -1,5 +1,6 @@
-let modalId = 0;
+import React from 'react';
 
+let modalId = 0;
 export default class ConfirmModal extends React.Component {
     constructor() {
         super();

@@ -1,4 +1,7 @@
 "use strict";
+
+import React from 'react';
+import ReactDOM from 'react-dom';
 import Button from "./Button.js";
 
 class SessionList extends React.Component {

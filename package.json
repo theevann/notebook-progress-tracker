@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "start": "snowpack build --watch",
+    "build": "snowpack build",
+    "startapp": "sudo /etc/init.d/mysql start && python3 flask_app.py",
+    "db": "sudo mysql npt",
+    "test": "echo \"This template does not include a test runner by default.\" && exit 1"
+  },
+  "devDependencies": {
+    "snowpack": "^3.0.1"
+  },
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  }
+}

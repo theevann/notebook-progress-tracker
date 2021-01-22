@@ -1,9 +1,8 @@
 *pyc
 __pycache__
-*_old.py
 app-env
 nptenv
 .ipynb_checkpoints
-settings.json
+.vscode
 dump_file.sql
 node_modules

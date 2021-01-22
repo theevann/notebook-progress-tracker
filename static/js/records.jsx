@@ -1,7 +1,11 @@
 "use strict";
 
-import Button from "./Button.js"
-import ConfirmModal from "./ConfirmModal.js"
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Button from "./Button.jsx";
+import ConfirmModal from "./ConfirmModal.jsx";
+
+
 class RecordsList extends React.Component {
     constructor() {
         super();
@@ -199,7 +203,6 @@ class RecordsHeader extends React.Component {
 }
 
 
-// shared session
 // settings change pwd
 
 class RecordsRow extends React.Component {

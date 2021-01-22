@@ -17,7 +17,7 @@ import utils
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='dist', static_url_path='/')
     app.config["DEBUG"] = True
     routes.init_app(app)
     models.init_app(app)

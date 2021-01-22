@@ -4,7 +4,7 @@
 {% block head %}
     {{ super() }}
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='session_management.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/session_management.css') }}">
     <title>Manage session {{ session.id }}</title>
 {% endblock %}
 
@@ -49,14 +49,14 @@
 
     {{ super() }}
 
-    <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script> -->
     <!-- <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script> -->
     
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/js/bootstrap4-toggle.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script type="module" src="/static/build/session_management.js"></script>
+    <script type="module" src="/js/session_management.js"></script>
 
 
     <!-- <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->

@@ -1,5 +1,7 @@
-import Button from "./Button.js"
-import ConfirmModal from "./ConfirmModal.js";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Button from "./Button.jsx";
+import ConfirmModal from "./ConfirmModal.jsx";
 
 
 class Sharing extends React.Component {
@@ -43,7 +45,7 @@ class Sharing extends React.Component {
                 return <div className="row my-1">
                     <div className="col-4 col-lg-2 text-center">{user}</div>
                     <div className="col-2 col-lg-1">
-                        <ConfirmModal onClick={() => this.deleteShare(user)} textBody="Are you sure to cancel this share ?" >
+                        <ConfirmModal onClick={() => this.deleteShare(user)} textBody="Are you sure to delete this share ?" >
                             <Button faClass="trash" btnClass="danger" classes="w-100" title="Cancel share with this user" />
                         </ConfirmModal>
                     </div>

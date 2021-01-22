@@ -1,0 +1,79 @@
+nav {
+    margin-bottom: 20px;
+}
+
+.cliquable {
+    cursor: pointer;
+}
+
+.fa {
+    border: none;
+    color: white;
+    padding: 2px 6px;
+    /* font-size: 30px; */
+    cursor: pointer;
+}
+
+.fa-eye,
+.fa-eye-slash {
+    color: #3e0d484d;
+}
+
+
+/*  SESSIONS & RECORDS  */
+
+.header {
+    background-color: rgba(86, 61, 124, 0.28);
+}
+
+.col-session,
+.col-record {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    background-color: rgba(86, 61, 124, .15);
+    /* border: 1px solid rgba(86,61,124,.2); */
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.row-session,
+.row-record {
+    border: 1px solid rgba(86, 61, 124, .3);
+}
+
+
+/*  SESSIONS  */
+
+.col-session-shared {
+    background-color: rgba(86, 61, 124, 0.07);
+}
+
+
+/*  RECORDS  */
+
+.image:hover {
+    position: relative;
+    left: -100%;
+    width: 200%;
+    height: auto;
+    display: block;
+    z-index: 999;
+    max-height: none !important;
+    max-width: none !important;
+}
+
+.search .btn {
+    margin: 0 5px;
+}
+
+pre {
+    text-align: left;
+}
+
+.col-record>pre {
+    margin-bottom: 0px !important;
+}
+
+.mjx-chtml {
+    font-size: 95% !important;
+}

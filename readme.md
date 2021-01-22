@@ -56,6 +56,13 @@ export FLASK_APP=flask_app.py
 flask db upgrade
 ```
 
+### Additionnal steps for development
+
+```sh
+npm install
+npm run start  # to start snowpack watch & build
+```
+
 # Running the server
 ```sh
 source nptenv/bin/activate
