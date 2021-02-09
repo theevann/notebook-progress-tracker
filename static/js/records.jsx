@@ -136,7 +136,8 @@ class RecordsList extends React.Component {
                 <div className="col">
                     {records}
                 </div>
-            </div>
+            </div>,
+            <RecordsInfo visible_records={this.state.visible_records.length} records={this.state.records.length} />
         ];
     }
 }
@@ -201,6 +202,22 @@ class RecordsHeader extends React.Component {
         );
     }
 }
+
+
+
+class RecordsInfo extends React.Component {
+    render() {
+        return (
+            <div className="row footer row-record">
+                <div className="col-sm-2">
+                    {/* {this.props.records} records - {this.props.visible_records} visible */}
+                    {this.props.visible_records} / {this.props.records} records 
+                </div>
+            </div>
+        );
+    }
+}
+
 
 
 // settings change pwd

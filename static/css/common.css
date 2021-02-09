@@ -22,7 +22,7 @@ nav {
 
 /*  SESSIONS & RECORDS  */
 
-.header {
+.header, .footer {
     background-color: rgba(86, 61, 124, 0.28);
 }
 
