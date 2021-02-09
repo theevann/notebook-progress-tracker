@@ -23,7 +23,7 @@ class Record(db.Model):
     sender_ip = db.Column(db.String(15))
     question_nb = db.Column(db.Integer)
     # question_name = db.Column(db.String(100))
-    time = db.Column(db.DateTime, default=datetime.now)
+    time = db.Column(db.DateTime, default=datetime.utcnow)
     type = db.Column(db.String(20))
     data = db.Column(db.BLOB)
 
@@ -68,8 +68,9 @@ class Record(db.Model):
 
     @property
     def f_time(self):
-        date = pytz.utc.localize(self.time).astimezone(paris)
-        return date.strftime("%d/%m/%Y  %H:%M")
+        # date = pytz.utc.localize(self.time).astimezone(paris)
+        # return date.strftime("%d/%m/%Y  %H:%M")
+        return self.time.timestamp() * 1000
 
 
 def format_array(a):

@@ -29,6 +29,10 @@ def get_records():
     records = Record.query.join(Session).filter(or_(Session.owner == current_user, Session.shared_users.contains(current_user)))
     if sid is not None:
         records = records.filter(Session.id==sid)
+    since = request.args.get('since', 0, type=int)
+    if since is not None:
+        since = datetime.fromtimestamp(since / 1000)
+        records = records.filter(Record.time > since)
     dict_records = [s.to_dict() for s in records.all()]
     return jsonify(dict_records)
 
@@ -69,7 +73,7 @@ def add_record():
 
     ### PROTECTION
 
-    if Record.query.filter_by(part=part, sender_name=record['sender_name']).filter(Record.time > datetime.now() - timedelta(minutes=1)).count() > 20:
+    if Record.query.filter_by(part=part, sender_name=record['sender_name']).filter(Record.time > datetime.utcnow() - timedelta(minutes=1)).count() > 20:
         return "Error: Too many recent records - Try again later", 400
 
     sender_reccount = Record.query.filter_by(part=part, sender_name=record['sender_name']).count()
@@ -105,7 +109,7 @@ def add_record():
     if existing_record:
         existing_record.type = record['type']
         existing_record.data = data
-        existing_record.time = datetime.now()
+        existing_record.time = datetime.utcnow()
         existing_record.ip = request.remote_addr
     else:
         db.session.add(Record(

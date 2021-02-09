@@ -29,21 +29,41 @@ class RecordsList extends React.Component {
     });
     let sid = localStorage.getItem("sid");
     if (sid !== null)
-      this.setState({session_id: sid}, this.update);
+      this.setState({session_id: sid}, this.loadData);
   }
   componentDidUpdate(prevProps, prevState) {
-    MathJax && MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    MathJax?.Hub.Queue(["Typeset", MathJax.Hub]);
     Rainbow.color();
   }
   changeSession(sid) {
     localStorage.setItem("sid", sid);
-    this.setState({session_id: sid}, this.update);
+    this.setState({session_id: sid}, this.loadData);
   }
-  update() {
-    console.log("Update");
-    jQuery.get("/get-records?sid=" + this.state.session_id, (data) => {
+  loadData() {
+    jQuery.get(`/get-records?sid=${this.state.session_id}`, (data) => {
       this.setState({records: data}, this.updateVisibleRecords);
     });
+  }
+  updateData() {
+    var since = this.state.records.reduce((p, c) => Math.max(p, c.f_time), 0);
+    jQuery.get(`/get-records?sid=${this.state.session_id}&since=${since}`, (data) => {
+      var records = this.state.records;
+      data.forEach((new_rec) => {
+        var idx = records.findIndex((r) => r.id == new_rec.id);
+        if (!~idx)
+          idx = records.length++;
+        records[idx] = new_rec;
+      });
+      this.setState({records}, this.updateVisibleRecords);
+    });
+  }
+  clearFilters(name, value) {
+    let filters = {
+      sender_name: "",
+      f_time: "",
+      question_nb: ""
+    };
+    this.setState({filters}, this.updateVisibleRecords);
   }
   onFilterChange(name, value) {
     let filters = this.state.filters;
@@ -54,34 +74,24 @@ class RecordsList extends React.Component {
     let filters = this.state.filters;
     let visible_records = [];
     try {
-      this.state.records.forEach((record) => {
-        if (!Object.keys(filters).every((key) => {
+      visible_records = this.state.records.filter((record) => {
+        return Object.keys(filters).every((key) => {
           if (key == "question_nb" && filters[key].toString() != "")
             return record[key].toString() === filters[key];
           return record[key].toString().match(new RegExp(filters[key], "i"));
-        }))
-          return;
-        visible_records.push(record);
+        });
       });
     } catch (e) {
       visible_records = this.state.records;
     }
     this.setState({visible_records});
   }
-  clearFilters(name, value) {
-    let filters = {
-      sender_name: "",
-      f_time: "",
-      question_nb: ""
-    };
-    this.setState({filters}, this.updateVisibleRecords);
-  }
   deleteRecords() {
     $.ajax({
       type: "DELETE",
       url: "/del-records",
       data: {record_ids: this.state.visible_records.map((r) => r.id)},
-      success: this.update.bind(this)
+      success: this.loadData.bind(this)
     });
   }
   toggleName() {
@@ -94,7 +104,6 @@ class RecordsList extends React.Component {
       return /* @__PURE__ */ React.createElement(RecordsRow, {
         key: `${record.id}-${record.f_time}`,
         record,
-        update: this.update.bind(this),
         name_visible: this.state.name_visible
       });
     });
@@ -129,8 +138,8 @@ class RecordsList extends React.Component {
       }),
       /* @__PURE__ */ React.createElement(RecordsSearchbar, {
         key: "searchbar",
-        session: this.getSession(this.state.session_id),
-        update: this.update.bind(this),
+        session,
+        loadData: this.loadData.bind(this),
         delete: this.deleteRecords.bind(this),
         clearFilters: this.clearFilters.bind(this),
         onFilterChange: this.onFilterChange.bind(this)
@@ -140,7 +149,11 @@ class RecordsList extends React.Component {
         style: {overflowY: "auto"}
       }, /* @__PURE__ */ React.createElement("div", {
         className: "col"
-      }, records))
+      }, records)),
+      /* @__PURE__ */ React.createElement(RecordsInfo, {
+        visible_records: this.state.visible_records.length,
+        records: this.state.records.length
+      })
     ];
   }
 }
@@ -158,7 +171,7 @@ class RecordsSearchbar extends React.Component {
   }
   render() {
     let fields = [["Name", "sender_name"], ["Date", "f_time"], ["Question nb", "question_nb"]];
-    let is_sharing = this.props.session && this.props.session.sharing;
+    let is_sharing = this.props.session?.sharing;
     return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", {
       className: "row search row-record"
     }, fields.map(([name, field]) => /* @__PURE__ */ React.createElement("div", {
@@ -176,7 +189,7 @@ class RecordsSearchbar extends React.Component {
       onClick: this.clearFilters.bind(this),
       className: "btn btn-secondary"
     }, "Clear Filters"), /* @__PURE__ */ React.createElement("button", {
-      onClick: this.props.update,
+      onClick: this.props.loadData,
       className: "btn btn-secondary"
     }, "Reload"), is_sharing ? "" : /* @__PURE__ */ React.createElement(ConfirmModal, {
       onClick: this.props.delete,
@@ -209,6 +222,15 @@ class RecordsHeader extends React.Component {
     }, "Answer"));
   }
 }
+class RecordsInfo extends React.Component {
+  render() {
+    return /* @__PURE__ */ React.createElement("div", {
+      className: "row footer row-record"
+    }, /* @__PURE__ */ React.createElement("div", {
+      className: "col-sm-2"
+    }, this.props.visible_records, " / ", this.props.records, " records"));
+  }
+}
 class RecordsRow extends React.Component {
   render() {
     let record = this.props.record;
@@ -230,7 +252,6 @@ class RecordsRow extends React.Component {
       if (record.type === "list")
         data = JSON.stringify(data, null);
       data = /* @__PURE__ */ React.createElement("pre", null, /* @__PURE__ */ React.createElement("code", {
-        className: "",
         "data-language": "python"
       }, data));
     } else {
@@ -240,19 +261,21 @@ class RecordsRow extends React.Component {
       className: "row row-record"
     }, /* @__PURE__ */ React.createElement("div", {
       className: "col-sm col-record"
-    }, this.props.name_visible ? record["sender_name"] : ""), fields.map((field) => /* @__PURE__ */ React.createElement("div", {
-      key: field,
+    }, this.props.name_visible ? record["sender_name"] : ""), /* @__PURE__ */ React.createElement("div", {
       className: "col-sm col-record"
-    }, /* @__PURE__ */ React.createElement("p", null, record[field]))), /* @__PURE__ */ React.createElement("div", {
-      className: "col-sm-5 col-record"
+    }, /* @__PURE__ */ React.createElement("p", null, new Date(record.f_time - new Date().getTimezoneOffset() * 6e4).toLocaleString("en-GB", {timezone: "UTC", year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit"}))), /* @__PURE__ */ React.createElement("div", {
+      className: "col-sm col-record"
+    }, /* @__PURE__ */ React.createElement("p", null, record.question_nb)), /* @__PURE__ */ React.createElement("div", {
+      className: "col-sm-5 col-record",
+      style: record.type != "image" ? {overflow: "auto"} : {}
     }, data));
   }
 }
 const domContainer = document.querySelector("#records-list");
 let record_list = ReactDOM.render(React.createElement(RecordsList), domContainer);
 MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-document.onfocus = () => record_list.update();
+document.onfocus = () => record_list.updateData();
 setInterval(() => {
   if (document.hasFocus())
-    record_list.update();
+    record_list.updateData();
 }, 3e4);

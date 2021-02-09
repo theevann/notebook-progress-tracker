@@ -18,7 +18,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(128), unique=True)
     email = db.Column(db.String(128), unique=True)
     password_hash = db.Column(db.String(128))
-    signup_date = db.Column(db.DateTime, default=datetime.now)
+    signup_date = db.Column(db.DateTime, default=datetime.utcnow)
     admin = db.Column(db.Boolean, default=False)
 
     sessions = relationship("Session", back_populates="owner")

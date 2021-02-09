@@ -17,7 +17,7 @@ class Session(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(db.String(100))
     description = db.Column(db.String(300))
-    creation_date = db.Column(db.DateTime, default=datetime.now)
+    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
     open = db.Column(db.Boolean, default=True)
 
     owner = relationship("User", foreign_keys=owner_id, back_populates="sessions")

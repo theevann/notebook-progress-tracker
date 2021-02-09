@@ -35,24 +35,48 @@ class RecordsList extends React.Component {
 
         let sid = localStorage.getItem("sid");
         if (sid !== null)
-            this.setState({ "session_id" : sid}, this.update);
+            this.setState({ "session_id" : sid}, this.loadData);
     }
 
     componentDidUpdate(prevProps, prevState) {
-        MathJax && MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        MathJax?.Hub.Queue(["Typeset", MathJax.Hub]);
         Rainbow.color();
     }
 
     changeSession(sid) {
         localStorage.setItem("sid", sid);
-        this.setState({ "session_id": sid }, this.update);
+        this.setState({ "session_id": sid }, this.loadData);
     }
 
-    update() {
-        console.log("Update");
-        jQuery.get("/get-records?sid=" + this.state.session_id, (data) => {
+    loadData() {
+        // This loadData function is needed for the delete
+        jQuery.get(`/get-records?sid=${this.state.session_id}`, (data) => {
             this.setState({ 'records': data }, this.updateVisibleRecords);
         });
+    }
+
+    updateData() {
+        // The since allows to avoid transfering all infos already transfered
+        var since = this.state.records.reduce((p, c) => Math.max(p, c.f_time), 0);
+        jQuery.get(`/get-records?sid=${this.state.session_id}&since=${since}`, (data) => {
+            var records = this.state.records;
+            // records = Array.from(new Map([...records.map(d => [d.id, d]), ...data.map(d => [d.id, d])]).values());
+            data.forEach(new_rec => {
+                var idx = records.findIndex(r => r.id == new_rec.id);
+                if (!~idx) idx = records.length++;
+                records[idx] = new_rec;
+            });
+            this.setState({ 'records': records }, this.updateVisibleRecords);
+        });        
+    }
+
+    clearFilters(name, value) {
+        let filters = {
+            'sender_name': '',
+            'f_time': '',
+            'question_nb': ''
+        };
+        this.setState({ 'filters': filters }, this.updateVisibleRecords);
     }
 
     onFilterChange(name, value) {
@@ -66,16 +90,13 @@ class RecordsList extends React.Component {
         let visible_records = [];
 
         try {
-            this.state.records.forEach(record => {
-                if (!Object.keys(filters).every(key => {
+            visible_records = this.state.records.filter(record => {
+                return (Object.keys(filters).every(key => {
                     if (key == "question_nb" && filters[key].toString() != "")
                         return record[key].toString() === filters[key];
                     return record[key].toString().match(new RegExp(filters[key], "i"));
-                }))
-                return;
-                
-                visible_records.push(record);
-            })
+                }));
+            });
         } catch(e) {
             visible_records = this.state.records;
         }
@@ -83,21 +104,12 @@ class RecordsList extends React.Component {
         this.setState({ 'visible_records': visible_records });
     }
 
-    clearFilters(name, value) {
-        let filters = {
-            'sender_name': '',
-            'f_time': '',
-            'question_nb': ''
-        };
-        this.setState({ 'filters': filters }, this.updateVisibleRecords);
-    }
-
     deleteRecords() {
         $.ajax({
             type: 'DELETE',
             url: "/del-records",
             data: { record_ids: this.state.visible_records.map(r => r.id) },
-            success: this.update.bind(this)
+            success: this.loadData.bind(this)
         });
     }
 
@@ -109,7 +121,7 @@ class RecordsList extends React.Component {
 
     render() {
         let records = this.state.visible_records.map(record => {
-            return <RecordsRow key={`${record.id}-${record.f_time}`} record={record} update={this.update.bind(this)} name_visible={this.state.name_visible} />;
+            return <RecordsRow key={`${record.id}-${record.f_time}`} record={record} name_visible={this.state.name_visible} />;
         })
 
         let session_id = this.state.session_id;
@@ -130,7 +142,7 @@ class RecordsList extends React.Component {
                 </div>
             </div>,
             <RecordsHeader key="header" toggleName={this.toggleName.bind(this)} name_visible={this.state.name_visible} />,
-            <RecordsSearchbar key="searchbar" session={this.getSession(this.state.session_id)} update={this.update.bind(this)} delete={this.deleteRecords.bind(this)} clearFilters={this.clearFilters.bind(this)} onFilterChange={this.onFilterChange.bind(this)} />,
+            <RecordsSearchbar key="searchbar" session={session} loadData={this.loadData.bind(this)} delete={this.deleteRecords.bind(this)} clearFilters={this.clearFilters.bind(this)} onFilterChange={this.onFilterChange.bind(this)} />,
             <div className="row" style={{ overflowY: "auto" }}>
             {/* <div className="row"> */}
                 <div className="col">
@@ -161,7 +173,7 @@ class RecordsSearchbar extends React.Component {
 
     render() {
         let fields = [['Name', 'sender_name'], ['Date', 'f_time'], ['Question nb', 'question_nb']];
-        let is_sharing = this.props.session && this.props.session.sharing;
+        let is_sharing = this.props.session?.sharing;
         return (
             <div>
                 <div className="row search row-record">
@@ -172,7 +184,7 @@ class RecordsSearchbar extends React.Component {
                     )}
                     <div className='col-sm-5 col-record'>
                         <button onClick={this.clearFilters.bind(this)} className='btn btn-secondary'>Clear Filters</button>
-                        <button onClick={this.props.update} className='btn btn-secondary'>Reload</button>
+                        <button onClick={this.props.loadData} className='btn btn-secondary'>Reload</button>
                         {
                         is_sharing ?
                         "" :
@@ -220,8 +232,6 @@ class RecordsInfo extends React.Component {
 
 
 
-// settings change pwd
-
 class RecordsRow extends React.Component {
     render() {
         let record = this.props.record;
@@ -236,7 +246,7 @@ class RecordsRow extends React.Component {
             data = data.split('\n').map((text, key) => <span key={key}>{text}<br/></span>); //TODO
         } else if (['code', 'list'].includes(record.type)) {
             if (record.type === 'list') data = JSON.stringify(data, null);
-            data = <pre><code className="" data-language="python">{data}</code></pre>;
+            data = <pre><code data-language="python">{data}</code></pre>;
         } else {
             data = <p>{data}</p>;
         }
@@ -246,12 +256,14 @@ class RecordsRow extends React.Component {
                 <div className='col-sm col-record'>
                     {this.props.name_visible ? record["sender_name"] : ""}
                 </div>
-                {fields.map(field =>
-                    <div key={field} className='col-sm col-record'>
-                        <p>{record[field]}</p>
-                    </div>
-                )}
-                <div className='col-sm-5 col-record'>
+                <div className='col-sm col-record'>
+                    <p>{(new Date(record.f_time - new Date().getTimezoneOffset() * 60000)).toLocaleString("en-GB",
+                    { timezone: "UTC", year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                </div>
+                <div className='col-sm col-record'>
+                    <p>{record.question_nb}</p>
+                </div>
+                <div className="col-sm-5 col-record" style={record.type != "image" ? {overflow: "auto"} : {}}>
                     {data}
                 </div>
             </div>
@@ -263,8 +275,8 @@ const domContainer = document.querySelector('#records-list');
 let record_list = ReactDOM.render(React.createElement(RecordsList), domContainer);
 MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 
-document.onfocus = () => record_list.update();
+document.onfocus = () => record_list.updateData();
 setInterval(() => {
     if (document.hasFocus())
-        record_list.update();
+        record_list.updateData();
 }, 30000);
