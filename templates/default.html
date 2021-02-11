@@ -35,7 +35,7 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
             <ul class="navbar-nav">
                 {% for name in navigation_bar %}
                     <li class="nav-item {{ 'active' if name == active_page else ''}}">
@@ -43,6 +43,7 @@
                     </li>
                 {% endfor %}
             </ul>
+            <span><a href="https://github.com/theevann/notebook-progress-tracker/"> <img src="{{ url_for('static', filename='images/gh.png') }}" alt="github" style="width:1.5em;filter: opacity(60%);"> </a></span>
             </div>
         </nav>
 

@@ -3,6 +3,7 @@ module.exports = {
     mount: {
         "static/js": '/js',
         "static/css": '/css',
+        "static/images": '/images',
     },
     plugins: [
         /* ... */
