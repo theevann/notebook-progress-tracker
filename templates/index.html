@@ -1,82 +1,183 @@
-{% extends "default.html" %}
-{% set active_page = "index" %}
+{% extends "default.html" %} {% set active_page = "index" %} {% block head %} {{
+super() }}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css"
+/>
+<title>Index</title>
+{% endblock %} {% block content %}
 
-{% block head %}
-    {{ super() }}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/themes/github.css">
-    <title>Index</title>
-{% endblock %}
+<div class="container" style="font-size: 1.3em">
+  <div class="row justify-content-center">
+    <h1 style="padding-bottom: 20px">
+      Welcome to the Notebook Progress Tracker
+    </h1>
+    <div class="col-9">
+      This website allows to track the progress of students running jupyter
+      notebooks.
+      <br />
+      It can be useful during exercice sessions or tutorials using notebooks to
+      know if your audience is following, and if they are able to get to the
+      expected results.
 
+      <h3 style="padding-top: 40px; padding-bottom: 20px">How it works</h3>
+      Inside your notebooks, you send the data that you want to track using a
+      "send" function.
+      <br />
+      On the website, you can see the data that people are sending from their
+      notebooks as well as aggregated views of this data.
 
-{% block content %}
-
-        <div class="container text-center" style='font-size:1.3em'>
-            <h1 style="padding-bottom:20px">Welcome to the Notebook Progress Tracker</h1>
-            This website allows to track the progress of students running notebooks.
-            <br>
-            It can be useful during exercice sessions or tutorials using notebooks to know if your audience is following,
-            and if they are able to get to the expected result.
-
-            <h3 style="padding-top:40px;padding-bottom:20px">How it works</h3>
-            Inside your notebooks, you simply send the data that you want to track.
-            <br>
-            On the website, you can see the data that people send from their notebooks.
-
-            <h3 style="padding-top:40px;padding-bottom:20px">How to use</h3>
-            First, sign up <a href="/signup">here</a>.
-            <br>
-            Under the <a href="/sessions">sessions tab</a>, create a new session and check its session id.
-            <br>
-            Inside your notebooks, paste the following code at the beginning:
-            <div class="row text-left justify-content-center" style="margin-top:20px;">
-                <pre style="width:60%"><code data-language="python">import requests
+      <h3 style="padding-top: 40px; padding-bottom: 20px">How to use</h3>
+      First, sign up <a href="/signup">here</a>.
+      <br />
+      Under the <a href="/sessions">sessions tab</a>, create a new session.
+      <br />
+      Inside your notebooks, paste the following code at the beginning:
+      <div
+        class="row text-left justify-content-center"
+        style="margin-top: 20px"
+      >
+        <div class="col-auto">
+          <pre><code data-language="python">import requests
 
 exec(requests.get("https://courdier.pythonanywhere.com/get-send-code").content)
 
 npt_config = {
-    'session_name': 'your-session-name-here',
-    'session_owner': 'your-username-here',
+    'session_name': 'your-session-name',
+    'session_owner': 'your-username',
     'sender_name': input("Your name:"),
 }</code></pre>
-            </div>
-            In this cell, you need to provide the name of the session previously created, as well as your username.
-            <br>
-            <br>
-            Then later in the code you can send variables of different types (int, float, string, numpy array, plot, function) using the 'send' function
-            that takes as first argument the element to send and as second argument the question number.
-            <div class="row text-left justify-content-center" style="margin-top:20px;">
-                <pre style="width:60%"><code data-language="python">result = "A string"
-send(result, 1)
+        </div>
+      </div>
+      In this cell, you need to provide the name of the session previously
+      created in place of "your-session-name", as well as your username in place
+      of "your-username". The student will have to provide a "sender" name that
+      allows you to know who sent the records.
+      <br />
+      <br />
+      Then later in the code you can send variables of different types (int,
+      float, string, numpy array, plot, image, function, class, torch Module)
+      using the 'send' function that takes as first argument the element to send
+      and as second argument the question number.
+      <div
+        class="row text-left justify-content-center"
+        style="margin-top: 20px"
+      >
+        <div class="col-auto" style="min-width: 60%">
+          <pre><code data-language="python">text = "A string"
+send(text, 1)
+
+
+number = 42
+send(number, 2)
+
 
 import numpy as np
-result = np.random.randint(0, 10, size=9).reshape(3,3)
-send(result, 2)
+np_array = np.random.randint(0, 10, size=9).reshape(3,3)
+send(np_array, 3)
+
 
 import matplotlib.pyplot as plt
 plt.plot(np.arange(10), np.random.rand(10))
 plt.title("My plot")
-send(plt, 3);
+send(plt, 4);
+
+
+image = Image.open("path/to/image")
+send(image, 5)
+
 
 def func(a, b):
     return a + b
-send(func, 4);</code></pre>
-            </div>
-            <br>
-            All options of npt_config :
-            <div class="row text-left justify-content-center" style="margin-top:20px;">
-                <pre style="width:60%"><code data-language="python">npt_config = {
+send(func, 6);
+
+
+class MyClass():
+    def __init__(self):
+        super().__init__()
+        self.L = torch.nn.Linear(2,3)
+    
+    @classmethod
+    def test(self, x):
+        return self.L(x)
+    
+    def forward(self, x):
+        return self.L(x)
+send(MyClass, 7)
+
+
+seq = torch.nn.Sequential(
+    torch.nn.Conv2d(3, 64, 3),
+    torch.nn.ReLU()
+)
+send(seq, 8)</code></pre>
+        </div>
+      </div>
+      <br />
+      All options of npt_config :
+      <div
+        class="row text-left justify-content-center"
+        style="margin-top: 20px"
+      >
+        <div class="col-auto">
+          <pre><code data-language="python">npt_config = {
     'session_name': '',  # The session name chosen on the website
     'part_name': 'default',  # The part name (Default to 'default')
     'session_owner': '',  # Your username on the website
     'sender_name': '',  # Name of the user of the notebook
     'log': False,  # Log of the sending state 
 }</code></pre>
-            </div>
         </div>
+      </div>
 
-    {{ super() }}
+      <h3 style="padding-top: 40px; padding-bottom: 20px">Jupyter extension</h3>
+      To help creating your notebooks, a jupyter extension is available. It
+      allows you to :
+      <ul>
+        <li>quickly renumber questions</li>
+        <li>
+          define some parts of your notebook as todos and create a new notebook
+          with this code replaced by a "To Do" text
+        </li>
+      </ul>
+      For more info about how to use it, follow this
+      <a
+        href="https://github.com/theevann/notebook-progress-tracker/tree/master/npt-jpt"
+        >link</a
+      >.
+      <br />
+      You can install it with:
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/rainbow.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/language/generic.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/language/python.js"></script>
+      <div
+        class="row text-left justify-content-center"
+        style="margin-top: 20px"
+      >
+        <pre
+          style="width: 60%"
+        ><code data-language="bash">git clone https://github.com/theevann/notebook-progress-tracker.git
+cd notebook-progress-tracker
+pip3 install jupyter_contrib_nbextensions
+jupyter contrib nbextensions install --user
+jupyter nbextension install npt-jpt --user
+jupyter nbextension enable npt-jpt/main
+</code></pre>
+      </div>
+
+      <h3 style="padding-top: 40px; padding-bottom: 20px">More information</h3>
+      For more information about the project, please see this
+      <a
+        href="https://github.com/theevann/notebook-progress-tracker/blob/master/docs/Python_Tracker.pdf"
+        >pdf documentation</a
+      >.
+      <br />
+      <br />
+    </div>
+  </div>
+</div>
+
+{{ super() }}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/rainbow.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/language/generic.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rainbow/1.2.0/js/language/python.js"></script>
 {% endblock %}
