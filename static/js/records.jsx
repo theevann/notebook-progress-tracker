@@ -49,6 +49,7 @@ class RecordsList extends React.Component {
     }
 
     loadData() {
+        if (this.state.session_id === null) return;
         // This loadData function is needed for the delete
         jQuery.get(`/get-records?sid=${this.state.session_id}`, (data) => {
             this.setState({ 'records': data }, this.updateVisibleRecords);
@@ -56,6 +57,7 @@ class RecordsList extends React.Component {
     }
 
     updateData() {
+        if (this.state.session_id === null) return;
         // The since allows to avoid transfering all infos already transfered
         var since = this.state.records.reduce((p, c) => Math.max(p, c.f_time), 0);
         jQuery.get(`/get-records?sid=${this.state.session_id}&since=${since}`, (data) => {

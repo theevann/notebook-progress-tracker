@@ -40,11 +40,15 @@ class RecordsList extends React.Component {
     this.setState({session_id: sid}, this.loadData);
   }
   loadData() {
+    if (this.state.session_id === null)
+      return;
     jQuery.get(`/get-records?sid=${this.state.session_id}`, (data) => {
       this.setState({records: data}, this.updateVisibleRecords);
     });
   }
   updateData() {
+    if (this.state.session_id === null)
+      return;
     var since = this.state.records.reduce((p, c) => Math.max(p, c.f_time), 0);
     jQuery.get(`/get-records?sid=${this.state.session_id}&since=${since}`, (data) => {
       var records = this.state.records;
