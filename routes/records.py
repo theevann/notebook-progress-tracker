@@ -52,7 +52,7 @@ def del_records():
 def add_record():
     # TODO: remove session id from record
     # import pdb; pdb.set_trace();
-    required_keys = ['session_owner', 'session_name', 'part_name', 'sender_name', 'question_nb', 'type']
+    required_keys = ['session_owner', 'session_name', 'part_name', 'sender_name', 'sender_uuid', 'question_nb', 'type']
     record = request.form
     file = request.files.get('file', None)
 
@@ -103,12 +103,13 @@ def add_record():
 
     existing_record = db.session.query(Record).filter(Record.session_id == session.id,
                                                       Record.part_id == part.id,
-                                                      Record.sender_name == record['sender_name'],
+                                                      Record.sender_uuid == record['sender_uuid'],
                                                       Record.question_nb == record['question_nb']
                                                       ).first()
     if existing_record:
         existing_record.type = record['type']
         existing_record.data = data
+        existing_record.sender_name = record['sender_name']
         existing_record.time = datetime.utcnow()
         existing_record.ip = request.remote_addr
     else:
@@ -116,6 +117,7 @@ def add_record():
             session_id=session.id,
             part_id=part.id,
             sender_name=record['sender_name'],
+            sender_uuid=record['sender_uuid'],
             sender_ip=request.remote_addr,
             question_nb=record['question_nb'],
             type=record['type'],

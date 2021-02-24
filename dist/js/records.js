@@ -3,6 +3,13 @@ import React from "../_snowpack/pkg/react.js";
 import ReactDOM from "../_snowpack/pkg/react-dom.js";
 import Button from "./Button.js";
 import ConfirmModal from "./ConfirmModal.js";
+import {BlockMath} from "../_snowpack/pkg/react-katex.js";
+const all_fields = [
+  ["Name", "d_name", 2],
+  ["Date", "d_time", 2],
+  ["Question", "question_nb", 2],
+  ["Answer", "", 6]
+];
 class RecordsList extends React.Component {
   constructor() {
     super();
@@ -12,9 +19,10 @@ class RecordsList extends React.Component {
       records: [],
       visible_records: [],
       name_visible: true,
+      name_to_uuid: new Map(),
       filters: {
-        sender_name: "",
-        f_time: "",
+        d_name: "",
+        d_time: "",
         question_nb: ""
       }
     };
@@ -29,44 +37,82 @@ class RecordsList extends React.Component {
     });
     let sid = localStorage.getItem("sid");
     if (sid !== null)
-      this.setState({session_id: sid}, this.loadData);
+      this.setState({session_id: sid}, this.loadRecords);
   }
   componentDidUpdate(prevProps, prevState) {
-    MathJax?.Hub.Queue(["Typeset", MathJax.Hub]);
     Rainbow.color();
   }
   changeSession(sid) {
     localStorage.setItem("sid", sid);
-    this.setState({session_id: sid}, this.loadData);
+    this.setState({session_id: sid}, this.loadRecords);
   }
-  loadData() {
-    if (this.state.session_id === null)
-      return;
-    jQuery.get(`/get-records?sid=${this.state.session_id}`, (data) => {
-      this.setState({records: data}, this.updateVisibleRecords);
+  prepareRecordData(data, type) {
+    if (type == "image") {
+      data = /* @__PURE__ */ React.createElement("img", {
+        className: "image",
+        src: `data:;base64,${data}`,
+        style: {maxWidth: "100%", maxHeight: "100%"}
+      });
+    } else if (type == "ndarray") {
+      data = /* @__PURE__ */ React.createElement(BlockMath, {
+        math: data
+      });
+    } else if (["code", "list"].includes(type)) {
+      if (type === "list")
+        data = JSON.stringify(data, null);
+      data = /* @__PURE__ */ React.createElement("pre", null, /* @__PURE__ */ React.createElement("code", {
+        "data-language": "python"
+      }, data));
+    } else {
+      data = /* @__PURE__ */ React.createElement("p", null, data);
+    }
+    return data;
+  }
+  prepareRecords(data, full_reload = true) {
+    let records = full_reload ? data : this.state.records;
+    let names_to_uuids = full_reload ? new Map() : this.state.names_to_uuids;
+    let time_parameters = {timezone: "UTC", year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit"};
+    let time_offset = new Date().getTimezoneOffset() * 6e4;
+    data.forEach((record) => {
+      let uuids = names_to_uuids.get(record.sender_name);
+      if (!uuids)
+        names_to_uuids.set(record.sender_name, [record.sender_uuid]);
+      else if (!uuids.includes(record.sender_uuid))
+        uuids.push(record.sender_uuid);
     });
-  }
-  updateData() {
-    if (this.state.session_id === null)
-      return;
-    var since = this.state.records.reduce((p, c) => Math.max(p, c.f_time), 0);
-    jQuery.get(`/get-records?sid=${this.state.session_id}&since=${since}`, (data) => {
-      var records = this.state.records;
-      data.forEach((new_rec) => {
-        var idx = records.findIndex((r) => r.id == new_rec.id);
+    if (!full_reload)
+      records.forEach((record) => {
+        let {sender_name: name, sender_uuid: uuid} = record;
+        let uuids = names_to_uuids.get(name);
+        record.d_name = uuids.length == 1 ? name : name + `  #${uuids.indexOf(uuid) + 1}`;
+      });
+    data.forEach((record) => {
+      let {sender_name: name, sender_uuid: uuid, f_data: data2, type} = record;
+      let uuids = names_to_uuids.get(name);
+      record.d_name = uuids.length == 1 ? name : name + `  #${uuids.indexOf(uuid) + 1}`;
+      record.d_time = new Date(record.f_time - time_offset).toLocaleString("en-GB", time_parameters);
+      record.d_data = this.prepareRecordData(data2, type);
+      if (!full_reload) {
+        var idx = records.findIndex((r) => r.id == record.id);
         if (!~idx)
           idx = records.length++;
-        records[idx] = new_rec;
-      });
-      this.setState({records}, this.updateVisibleRecords);
+        records[idx] = record;
+      }
     });
+    this.setState({records, names_to_uuids}, this.updateVisibleRecords);
   }
-  clearFilters(name, value) {
-    let filters = {
-      sender_name: "",
-      f_time: "",
-      question_nb: ""
-    };
+  loadRecords(full_reload = true) {
+    if (this.state.session_id === null)
+      return;
+    var since = full_reload ? 0 : this.state.records.reduce((p, c) => Math.max(p, c.f_time), 0);
+    jQuery.get(`/get-records?sid=${this.state.session_id}&since=${since}`, (data) => this.prepareRecords(data, full_reload));
+  }
+  updateRecords() {
+    this.loadRecords(false);
+  }
+  clearFilters() {
+    let filters = this.state.filters;
+    Object.keys(filters).forEach((key) => filters[key] = "");
     this.setState({filters}, this.updateVisibleRecords);
   }
   onFilterChange(name, value) {
@@ -86,7 +132,7 @@ class RecordsList extends React.Component {
         });
       });
     } catch (e) {
-      visible_records = this.state.records;
+      visible_records = [...this.state.records];
     }
     this.setState({visible_records});
   }
@@ -95,7 +141,7 @@ class RecordsList extends React.Component {
       type: "DELETE",
       url: "/del-records",
       data: {record_ids: this.state.visible_records.map((r) => r.id)},
-      success: this.loadData.bind(this)
+      success: this.loadRecords.bind(this)
     });
   }
   toggleName() {
@@ -143,7 +189,7 @@ class RecordsList extends React.Component {
       /* @__PURE__ */ React.createElement(RecordsSearchbar, {
         key: "searchbar",
         session,
-        loadData: this.loadData.bind(this),
+        loadRecords: this.loadRecords.bind(this),
         delete: this.deleteRecords.bind(this),
         clearFilters: this.clearFilters.bind(this),
         onFilterChange: this.onFilterChange.bind(this)
@@ -174,26 +220,25 @@ class RecordsSearchbar extends React.Component {
     this.props.clearFilters();
   }
   render() {
-    let fields = [["Name", "sender_name"], ["Date", "f_time"], ["Question nb", "question_nb"]];
     let is_sharing = this.props.session?.sharing;
     return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", {
       className: "row search row-record"
-    }, fields.map(([name, field]) => /* @__PURE__ */ React.createElement("div", {
+    }, all_fields.slice(0, -1).map(([name, field, sz]) => /* @__PURE__ */ React.createElement("div", {
       key: name,
-      className: "col-sm col-record"
+      className: `col-sm-${sz} col-record`
     }, /* @__PURE__ */ React.createElement("input", {
+      className: "w-100 form-control",
       type: "text",
       name: field,
       placeholder: name,
-      style: {width: "100%"},
       onChange: this.handleFilterTextChange.bind(this)
     }))), /* @__PURE__ */ React.createElement("div", {
-      className: "col-sm-5 col-record"
+      className: `col-sm-${all_fields[3][2]} col-record`
     }, /* @__PURE__ */ React.createElement("button", {
       onClick: this.clearFilters.bind(this),
       className: "btn btn-secondary"
     }, "Clear Filters"), /* @__PURE__ */ React.createElement("button", {
-      onClick: this.props.loadData,
+      onClick: this.props.loadRecords,
       className: "btn btn-secondary"
     }, "Reload"), is_sharing ? "" : /* @__PURE__ */ React.createElement(ConfirmModal, {
       onClick: this.props.delete,
@@ -209,21 +254,18 @@ class RecordsSearchbar extends React.Component {
 }
 class RecordsHeader extends React.Component {
   render() {
-    let names = ["Date", "Question number"];
     return /* @__PURE__ */ React.createElement("div", {
       className: "row header row-record"
     }, /* @__PURE__ */ React.createElement("div", {
-      className: "col-sm col-record"
+      className: `col-sm-${all_fields[0][2]} col-record`
     }, "Name  ", /* @__PURE__ */ React.createElement("i", {
       onClick: this.props.toggleName,
       className: "fa fa-eye" + (this.props.name_visible ? "" : "-slash"),
       style: {fontSize: "15px"}
-    })), names.map((name) => /* @__PURE__ */ React.createElement("div", {
+    })), all_fields.slice(1).map(([name, _, sz]) => /* @__PURE__ */ React.createElement("div", {
       key: name,
-      className: "col-sm col-record"
-    }, name)), /* @__PURE__ */ React.createElement("div", {
-      className: "col-sm-5 col-record"
-    }, "Answer"));
+      className: `col-sm-${sz} col-record`
+    }, name)));
   }
 }
 class RecordsInfo extends React.Component {
@@ -237,49 +279,27 @@ class RecordsInfo extends React.Component {
 }
 class RecordsRow extends React.Component {
   render() {
-    let record = this.props.record;
-    let fields = ["f_time", "question_nb"];
-    let data = record.f_data;
-    if (record.type == "image") {
-      data = /* @__PURE__ */ React.createElement("img", {
-        className: "image",
-        src: `data:;base64,${data}`,
-        style: {maxWidth: "100%", maxHeight: "100%"}
-      });
-    } else if (record.type == "ndarray") {
-      data = "$$ " + data + " $$";
-    } else if (record.type == "ndarray" && !data.startsWith("\\begin")) {
-      data = data.split("\n").map((text, key) => /* @__PURE__ */ React.createElement("span", {
-        key
-      }, text, /* @__PURE__ */ React.createElement("br", null)));
-    } else if (["code", "list"].includes(record.type)) {
-      if (record.type === "list")
-        data = JSON.stringify(data, null);
-      data = /* @__PURE__ */ React.createElement("pre", null, /* @__PURE__ */ React.createElement("code", {
-        "data-language": "python"
-      }, data));
-    } else {
-      data = /* @__PURE__ */ React.createElement("p", null, data);
-    }
+    let {d_name, d_time, d_data, question_nb, type} = this.props.record;
+    let id = 0;
     return /* @__PURE__ */ React.createElement("div", {
       className: "row row-record"
     }, /* @__PURE__ */ React.createElement("div", {
-      className: "col-sm col-record"
-    }, this.props.name_visible ? record["sender_name"] : ""), /* @__PURE__ */ React.createElement("div", {
-      className: "col-sm col-record"
-    }, /* @__PURE__ */ React.createElement("p", null, new Date(record.f_time - new Date().getTimezoneOffset() * 6e4).toLocaleString("en-GB", {timezone: "UTC", year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit"}))), /* @__PURE__ */ React.createElement("div", {
-      className: "col-sm col-record"
-    }, /* @__PURE__ */ React.createElement("p", null, record.question_nb)), /* @__PURE__ */ React.createElement("div", {
-      className: "col-sm-5 col-record",
-      style: record.type != "image" ? {overflow: "auto"} : {}
-    }, data));
+      className: `col-sm-${all_fields[id++][2]} col-record`,
+      style: {whiteSpace: "pre-wrap"}
+    }, this.props.name_visible ? d_name : ""), /* @__PURE__ */ React.createElement("div", {
+      className: `col-sm-${all_fields[id++][2]} col-record`
+    }, /* @__PURE__ */ React.createElement("p", null, d_time)), /* @__PURE__ */ React.createElement("div", {
+      className: `col-sm-${all_fields[id++][2]} col-record`
+    }, /* @__PURE__ */ React.createElement("p", null, question_nb)), /* @__PURE__ */ React.createElement("div", {
+      className: `col-sm-${all_fields[id++][2]} col-record`,
+      style: type != "image" ? {overflow: "auto"} : {}
+    }, d_data));
   }
 }
 const domContainer = document.querySelector("#records-list");
-let record_list = ReactDOM.render(React.createElement(RecordsList), domContainer);
-MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-document.onfocus = () => record_list.updateData();
+window.record_list = ReactDOM.render(React.createElement(RecordsList), domContainer);
+document.onfocus = () => record_list.updateRecords();
 setInterval(() => {
   if (document.hasFocus())
-    record_list.updateData();
+    record_list.updateRecords();
 }, 3e4);

@@ -20,6 +20,7 @@ class Record(db.Model):
     session_id = db.Column(db.Integer, db.ForeignKey("sessions.id"))
     part_id = db.Column(db.Integer, db.ForeignKey("session_parts.id"))
     sender_name = db.Column(db.String(100))
+    sender_uuid = db.Column(db.String(100))
     sender_ip = db.Column(db.String(15))
     question_nb = db.Column(db.Integer)
     # question_name = db.Column(db.String(100))
@@ -36,6 +37,7 @@ class Record(db.Model):
             "id",
             "session_id",
             "sender_name",
+            "sender_uuid",
             "sender_ip",
             "question_nb",
             "f_time",

@@ -77,3 +77,7 @@ pre {
 .mjx-chtml {
     font-size: 95% !important;
 }
+
+.katex {
+    font-size: 0.9em !important;
+}

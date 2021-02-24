@@ -10,10 +10,15 @@ def get_send_code():
 import io
 import sys
 import json
+import uuid
 import requests
 import inspect
 
 from IPython.core.magics.code import extract_symbols
+
+_npt_config = {{
+    'sender_uuid': uuid.getnode()
+}}
 
 def _npt_get_class_code(cls):
     cell_code = "".join(inspect.linecache.getlines(_npt_get_file(cls)))
@@ -51,7 +56,8 @@ def send(data, q_nb):
         'session_name': npt_config.get('session_name'),
         'part_name': npt_config.get('part_name', 'default'),
         'session_owner': npt_config.get('session_owner'),
-        'sender_name': npt_config.get('sender_name')
+        'sender_name': npt_config.get('sender_name'),
+        'sender_uuid': _npt_config.get('sender_uuid')
     }}
 
     datatype = type(data).__name__
