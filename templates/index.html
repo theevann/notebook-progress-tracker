@@ -72,24 +72,32 @@ number = 42
 send(number, 2)
 
 
+alist = [42, "42"]
+send(alist, 3)
+
+
+adict = {"answer": 42, "info": ["21+21"]}
+send(adict, 4)
+
+
 import numpy as np
 np_array = np.random.randint(0, 10, size=9).reshape(3,3)
-send(np_array, 3)
+send(np_array, 5)
 
 
 import matplotlib.pyplot as plt
 plt.plot(np.arange(10), np.random.rand(10))
 plt.title("My plot")
-send(plt, 4);
+send(plt, 6)  # Note: has to be in the same cell as the plot
 
 
 image = Image.open("path/to/image")
-send(image, 5)
+send(image, 7)
 
 
 def func(a, b):
     return a + b
-send(func, 6);
+send(func, 8)
 
 
 class MyClass():
@@ -103,14 +111,14 @@ class MyClass():
     
     def forward(self, x):
         return self.L(x)
-send(MyClass, 7)
+send(MyClass, 9)
 
 
 seq = torch.nn.Sequential(
     torch.nn.Conv2d(3, 64, 3),
     torch.nn.ReLU()
 )
-send(seq, 8)</code></pre>
+send(seq, 10)</code></pre>
         </div>
       </div>
       <img src="/images/example.gif" style="border: 1px lightgray solid;border-radius: .5em;"/>

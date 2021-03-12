@@ -57,9 +57,11 @@ class RecordsList extends React.Component {
       data = /* @__PURE__ */ React.createElement(BlockMath, {
         math: data
       });
-    } else if (["code", "list"].includes(type)) {
+    } else if (["code", "list", "dict"].includes(type)) {
       if (type === "list")
         data = JSON.stringify(data, null);
+      else if (type === "dict")
+        data = JSON.stringify(data, null, 1);
       data = /* @__PURE__ */ React.createElement("pre", null, /* @__PURE__ */ React.createElement("code", {
         "data-language": "python"
       }, data));

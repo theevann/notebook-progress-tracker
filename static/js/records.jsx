@@ -70,8 +70,9 @@ class RecordsList extends React.Component {
         } else if (type == 'ndarray') {
             // data = "$$" + data + "$$";
             data = <BlockMath math={data}></BlockMath>;
-        } else if (['code', 'list'].includes(type)) {
+        } else if (['code', 'list', 'dict'].includes(type)) {
             if (type === 'list') data = JSON.stringify(data, null);
+            else if (type === 'dict') data = JSON.stringify(data, null, 1);
             data = <pre><code data-language="python">{data}</code></pre>;
         } else {
             data = <p>{data}</p>;

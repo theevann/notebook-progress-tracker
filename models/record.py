@@ -51,6 +51,8 @@ class Record(db.Model):
         try:
             if self.type == "list":
                 data = pickle.loads(self.data)
+            elif self.type == "dict":
+                data = pickle.loads(self.data)
             elif self.type == "ndarray":
                 data = format_array(pickle.loads(self.data))
             elif self.type == "str":

@@ -70,6 +70,9 @@ def send(data, q_nb):
     elif datatype == 'list':
         form['type'] = datatype
         form['data'] = json.dumps(data)
+    elif datatype == 'dict':
+        form['type'] = datatype
+        form['data'] = json.dumps(data)
     elif datatype == 'ndarray':
         form['type'] = datatype
         form['data'] = json.dumps(data.tolist())
@@ -82,15 +85,18 @@ def send(data, q_nb):
     elif inspect.isclass(data):
         form['type'] = 'code'
         form['data'] = _npt_get_class_code(data)
-    elif "torch.nn.modules" in type(data).__module__:
+    elif 'torch.nn.modules' in type(data).__module__:
         form['type'] = 'code'
         form['data'] = str(data)
     elif datatype == 'Figure' or (datatype == 'module' and data.__name__ == 'matplotlib.pyplot'):
+        data = data if datatype == 'Figure' else plt.gcf()
+        if not data.get_axes():
+            print("! Warning, your figure is blank !\\nMake sure the send function is in the same cell as the plot, or send the matplotlib figure itself.")
         form['type'] = 'image'
-        file['file'] = _npt_get_binary_image(data, "savefig")
+        file['file'] = _npt_get_binary_image(data, 'savefig')
     elif datatype == 'JpegImageFile':
         form['type'] = 'image'
-        file['file'] = _npt_get_binary_image(data, "save")
+        file['file'] = _npt_get_binary_image(data, 'save')
 
     else:
         print('Datatype not supported')

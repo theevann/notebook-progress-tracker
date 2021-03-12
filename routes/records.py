@@ -86,11 +86,11 @@ def add_record():
 
     ### PREPARING DATA
 
-    if record['type'] == "list":
+    if record['type'] in ("list", "dict"):
         data = pickle.dumps(json.loads(record['data']))
     elif record['type'] == "ndarray":
         data = np.array(json.loads(record['data'])).dumps() #TODO: pickle dump only as list, as numpy arrays take more space
-    elif record['type'] in ["str","code"]:
+    elif record['type'] in ("str","code"):
         data = str.encode(record['data'])
     elif record['type'] == "image":
         buffer = io.BytesIO()
@@ -98,7 +98,7 @@ def add_record():
         data = buffer.getvalue()
         buffer.close()
     else:
-        return "Error: DataType is not supported", 400
+        return "Server error: DataType is not supported", 400
 
 
     existing_record = db.session.query(Record).filter(Record.session_id == session.id,
