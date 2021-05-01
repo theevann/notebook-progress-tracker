@@ -24,84 +24,82 @@
     <div class="container">
         <div class="row">
             <div class="col-5 offset-2">
+
                 <div class="row">
-                    <div class="col">
+                    <div class="col-10">
                         <h1>Account</h1>
-                    </div>
-                </div>
-        
-                <div class="row">
-                    <div class="input-group col-8">
-                        <div class="input-group-prepend offset-1">
-                            <div class="input-group-text">Username</div>
+
+                        <div class="input-group my-3">
+                            <div class="input-group-prepend offset-1">
+                                <div class="input-group-text">Username</div>
+                            </div>
+                            <span class="form-control">{{ user.username }}</span>
                         </div>
-                        <span class="form-control">{{ user.username }}</span>
-                    </div>
-                </div>
-        
-                <div class="row">
-                    <div class="input-group col-8">
-                        <div class="input-group-prepend offset-1">
-                            <div class="input-group-text">Email</div>
+                    
+                        <div class="input-group my-3">
+                            <div class="input-group-prepend offset-1">
+                                <div class="input-group-text">Email</div>
+                            </div>
+                            <span class="form-control">{{ user.email }}</span>
                         </div>
-                        <span class="form-control">{{ user.email }}</span>
                     </div>
                 </div>
         
                 <div class="row">
-                    <div class="col">
+                    <div class="col-10">
                         <h1>Change password</h1>
+        
+                        {% if error %}
+                            <div class="alert alert-warning text-center" role="alert">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+                
+                        {% if success_pwd %}
+                            <div class="alert alert-success text-center" role="alert">
+                                Password changed successfully
+                            </div>
+                        {% endif %}
+                
+                        <form action="/change-password" method="POST">
+                            <div class="form-group input-group my-3">
+                                <div class="input-group-prepend offset-1">
+                                    <div class="input-group-text">Current Password</div>
+                                </div>
+                                <input type="password" class="form-control" id="current_password" name="current_password" placeholder="Enter your current password">
+                            </div>
+                            
+                            <div class="form-group input-group my-3">
+                                <div class="input-group-prepend offset-1">
+                                    <div class="input-group-text">New Password</div>
+                                </div>
+                                <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Enter your new password">
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary px-5">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                        
+                <div class="row">
+                    <div class="col-10">
+                        <h1>Delete account</h1>
+
+                        <div id="delete-button-container"></div>
                     </div>
                 </div>
         
-                {% if error %}
-                    <div class="alert alert-warning text-center col" role="alert">
-                        {{ error }}
-                    </div>
-                {% endif %}
-        
-                {% if success_pwd %}
-                    <div class="alert alert-success text-center col" role="alert">
-                        Password changed successfully
-                    </div>
-                {% endif %}
-        
-                <div>
-                    <form action="/change-password" method="POST">
-                        <div class="row form-group input-group">
-                            <div class="input-group-prepend offset-1">
-                                <div class="input-group-text">Current Password</div>
-                            </div>
-                            <input type="password" class="form-control" id="current_password" name="current_password" placeholder="Enter your current password">
-                        </div>
-                        
-                        <div class="row form-group input-group">
-                            <div class="input-group-prepend offset-1">
-                                <div class="input-group-text">New Password</div>
-                            </div>
-                            <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Enter your new password">
-                        </div>
-                        
-                        <div class="row text-center">
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary px-5">Save</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
     </div>
     
     {{ super() }}
 
-    <!-- <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script> -->
-    <!-- <script type="module" src="/static/settings.js"></script> -->
+    <script type="module" src="/js/settings.js"></script>
 
-
-    <!-- <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script> -->
-    <!-- <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
-    <!-- <script type="text/babel" src="static/src/session_management.jsx"></script> -->
 {% endblock %}

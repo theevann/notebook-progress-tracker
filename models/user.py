@@ -30,3 +30,9 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return self.username
+
+    def delete(self):
+        for session in self.sessions:
+            session.delete()
+        db.session.delete(self)
+        db.session.commit()

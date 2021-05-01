@@ -95,7 +95,7 @@ def del_share():
 @login_required
 def add_session():
     data = request.form
-    register_session(data['name'], data['description'])
+    Session.register_new(data['name'], data['description'], current_user)
     return redirect(url_for('sessions.show_sessions'))
 
 
@@ -104,7 +104,9 @@ def add_session():
 def del_session():
     if 'id' in request.args:
         sid = int(request.args['id'])
-        delete_session(sid)
+        session = get_session_by_id(sid)
+        if session is not None:
+            session.delete()
     return redirect(url_for('sessions.show_sessions'))
 
 
@@ -113,26 +115,33 @@ def del_session():
 def toggle_session():
     if 'id' in request.args:
         sid = int(request.args['id'])
-        toggle_session_state(sid)
+        session = get_session_by_id(sid)
+        if session is not None:
+            session.toggle_state()
     return redirect(url_for('sessions.show_sessions'))
 
 
 @sessions_bp.route("/update-session", methods=["POST"])
 @login_required
 def update_session():
-    data = request.form
-    session = Session.query.filter_by(id=data['id'], owner=current_user).first()
-    if not session:
-        return "No such session", 400
-        
-    session.name = data['name']
-    session.description = data['description']
+    if 'id' in request.form:
+        data = request.form
+        session = get_session_by_id(data['id'])
+        if not session:
+            return "No such session", 400
+            
+        session.name = data['name']
+        session.description = data['description']
 
-    if Session.query.filter_by(name=data['name'], owner=current_user, open=True).first():
-        session.open = False
+        if Session.query.filter_by(name=data['name'], owner=current_user, open=True).first():
+            session.open = False
 
-    db.session.commit()
+        db.session.commit()
     return "OK", 200
+
+
+
+# SESSION-PARTS RELATED
 
 
 @sessions_bp.route("/add-part", methods=["POST"])
@@ -185,44 +194,5 @@ def update_part():
 
 
 
-
-def register_session(name, description=""):
-    if name == '':
-        return False
-
-    is_open = not any(db.session.query(Session.open).filter(Session.owner == current_user, Session.name == name).all())
-    session = Session(name=name, owner=current_user, description=description, open=is_open)
-    db.session.add(session)
-    db.session.commit()
-    default_part = SessionPart(session_id=session.id)
-    db.session.add(default_part)
-    db.session.commit()
-    return True
-
-
-def delete_session(sid):
-    session = Session.query.filter_by(id=sid, owner=current_user)
-    if not session.first():
-        return False
-    Record.query.filter_by(session_id=sid).delete()
-    SessionPart.query.filter_by(session_id=sid).delete()
-    session.delete()
-    db.session.commit()
-    return True
-
-
-def toggle_session_state(sid):
-    session = Session.query.filter_by(id=sid, owner=current_user).first()
-    if not session:
-        return False
-    if not session.open:
-        for s in Session.query.filter_by(owner=current_user, name=session.name).all():
-            s.open = False
-    session.open = not session.open
-    db.session.commit()
-    return True
-
-
-def check_session_owner(sid):
-    # TODO: To use as decorator ?
-    return bool(Session.query.filter_by(id=sid, owner=current_user).first())
+def get_session_by_id(sid):
+    return Session.query.filter_by(id=sid, owner=current_user).first()

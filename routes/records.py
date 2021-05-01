@@ -5,7 +5,7 @@ import numpy as np
 from datetime import datetime, timedelta
 
 from models.base import db
-from models import Session, SessionPart, Record, User
+from models import Session, SessionPart, Record
 
 from sqlalchemy import func, or_
 from flask import Blueprint, render_template, request, redirect, url_for, make_response, jsonify

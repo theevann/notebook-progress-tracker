@@ -1,5 +1,5 @@
 import re
-from .auth import login_manager, load_user
+from .auth import load_user
 from models import User, db
 
 from flask import Blueprint, render_template, request, redirect, url_for
@@ -71,3 +71,11 @@ def logout():
 def check_email(email):
     pattern = r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?"
     return re.match(pattern, email) is not None
+
+
+
+@login_bp.route('/delete-account', methods=["GET"])
+@login_required
+def delete_account():
+    current_user.delete()
+    return redirect(url_for('index'))
