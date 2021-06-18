@@ -11,13 +11,14 @@ import io
 import sys
 import json
 import uuid
+import platform
 import requests
 import inspect
 
 from IPython.core.magics.code import extract_symbols
 
 _npt_config = {{
-    'sender_uuid': uuid.getnode()
+    'sender_uuid': hash(platform.node() + str(uuid.getnode()))
 }}
 
 def _npt_get_class_code(cls):
