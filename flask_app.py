@@ -3,7 +3,6 @@ from flask_migrate import Migrate
 
 import routes
 import models
-import utils
 
 
 # TODO:
@@ -20,7 +19,6 @@ def create_app():
     app.config["DEBUG"] = True
     routes.init_app(app)
     models.init_app(app)
-    utils.init_app(app)
     return app
 
 
