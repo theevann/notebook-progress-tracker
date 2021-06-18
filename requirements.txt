@@ -4,6 +4,7 @@ flask-login
 flask-migrate
 mysql
 mysql-connector
+pusher
 python-dotenv
 pytz
 numpy

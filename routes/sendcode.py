@@ -12,14 +12,34 @@ import sys
 import json
 import uuid
 import platform
+import hashlib
 import requests
 import inspect
 
 from IPython.core.magics.code import extract_symbols
 
 _npt_config = {{
-    'sender_uuid': hash(platform.node() + str(uuid.getnode()))
+    'sender_uuid': hashlib.md5((platform.node() + str(uuid.getnode())).encode()).hexdigest(),
+    'server_url': '{request.url_root}'
 }}
+
+def npt_init_pusher():
+    if 'npt_config' not in globals():
+        print('Variable npt_config is not defined')
+        return
+
+    own_channel = hashlib.md5("{{session_name}}_{{session_owner}}_{{sender_uuid}}".format(**npt_config, **_npt_config).lower().encode()).hexdigest()
+    all_channel = hashlib.md5("{{session_name}}_{{session_owner}}".format(**npt_config).lower().encode()).hexdigest()
+
+    # Make server url available in JS
+    serverurl_js_code = r"window._npt_server_url = '%s';" % _npt_config['server_url']
+    # Make channels names available in JS
+    channels_js_code = r"window._npt_all_channel = '%s';window._npt_own_channel = '%s';" % (all_channel, own_channel)
+    # Load Vanillatoast and Pusher
+    client_js_code = requests.get("{{}}js/jpt-client.js".format(_npt_config['server_url'])).content.decode()
+    
+    display(Javascript(serverurl_js_code + "\\n" + channels_js_code + "\\n" + client_js_code))
+
 
 def _npt_get_class_code(cls):
     cell_code = "".join(inspect.linecache.getlines(_npt_get_file(cls)))
@@ -50,7 +70,7 @@ def send(data, q_nb):
         print('Variable npt_config is not defined')
         return
 
-    url = '{request.url_root}add-record'
+    url = _npt_config['server_url'] + 'add-record'
     file = {{}}
     form = {{
         'question_nb': q_nb,

@@ -3,3 +3,7 @@ export DB_USERNAME="npt-user"
 export DB_HOSTNAME="localhost"
 export DB_NAME="npt"
 export SECRET_KEY="my-secret-key"
+
+export PUSHER_APPID="0000000"
+export PUSHER_KEY="00000000000000000000"
+export PUSHER_SECRET="00000000000000000000"
