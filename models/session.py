@@ -71,7 +71,7 @@ class Session(db.Model):
         if name == '':
             return False
 
-        is_open = not any(db.session.query(Session.open).filter(Session.owner == user, Session.name == name).all())
+        is_open = not any(map(lambda x: x[0], db.session.query(Session.open).filter(Session.owner == user, Session.name == name).all()))
         session = Session(name=name, owner=user, description=description, open=is_open)
         db.session.add(session)
         db.session.commit()
