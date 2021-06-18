@@ -5,10 +5,10 @@ import Button from "./Button.js";
 import ConfirmModal from "./ConfirmModal.js";
 import {BlockMath} from "../_snowpack/pkg/react-katex.js";
 const all_fields = [
-  ["Name", "d_name", 2],
-  ["Date", "d_time", 2],
-  ["Question", "question_nb", 2],
-  ["Answer", "", 6]
+  ["Name", "d_name", 2, "d_name"],
+  ["Date", "d_time", 2, "f_time"],
+  ["Question", "question_nb", 2, "question_nb"],
+  ["Answer", "", 6, ""]
 ];
 class RecordsList extends React.Component {
   constructor() {
@@ -24,7 +24,9 @@ class RecordsList extends React.Component {
         d_name: "",
         d_time: "",
         question_nb: ""
-      }
+      },
+      sort_field: "d_time",
+      sort_direction: 1
     };
   }
   getSession(session_id) {
@@ -136,6 +138,13 @@ class RecordsList extends React.Component {
     } catch (e) {
       visible_records = [...this.state.records];
     }
+    visible_records.sort((a, b) => {
+      if (a[this.state.sort_field] < b[this.state.sort_field])
+        return -this.state.sort_direction;
+      if (a[this.state.sort_field] > b[this.state.sort_field])
+        return this.state.sort_direction;
+      return 0;
+    });
     this.setState({visible_records});
   }
   deleteRecords() {
@@ -150,6 +159,13 @@ class RecordsList extends React.Component {
     this.setState({
       name_visible: !this.state.name_visible
     });
+  }
+  toggleSort(field) {
+    var sort_direction = this.state.sort_field == field ? -this.state.sort_direction : 1;
+    this.setState({
+      sort_field: field,
+      sort_direction
+    }, this.updateVisibleRecords);
   }
   render() {
     let records = this.state.visible_records.map((record) => {
@@ -186,6 +202,7 @@ class RecordsList extends React.Component {
       /* @__PURE__ */ React.createElement(RecordsHeader, {
         key: "header",
         toggleName: this.toggleName.bind(this),
+        toggleSort: this.toggleSort.bind(this),
         name_visible: this.state.name_visible
       }),
       /* @__PURE__ */ React.createElement(RecordsSearchbar, {
@@ -260,14 +277,22 @@ class RecordsHeader extends React.Component {
       className: "row header row-record"
     }, /* @__PURE__ */ React.createElement("div", {
       className: `col-sm-${all_fields[0][2]} col-record`
-    }, "Name  ", /* @__PURE__ */ React.createElement("i", {
+    }, "Name", /* @__PURE__ */ React.createElement("i", {
       onClick: this.props.toggleName,
       className: "fa fa-eye" + (this.props.name_visible ? "" : "-slash"),
       style: {fontSize: "15px"}
-    })), all_fields.slice(1).map(([name, _, sz]) => /* @__PURE__ */ React.createElement("div", {
+    }), /* @__PURE__ */ React.createElement("i", {
+      onClick: () => this.props.toggleSort("d_name"),
+      className: "fa fa-sort",
+      style: {fontSize: "15px", color: "#3e0d484d"}
+    })), all_fields.slice(1).map(([name, field, size, sort_field]) => /* @__PURE__ */ React.createElement("div", {
       key: name,
-      className: `col-sm-${sz} col-record`
-    }, name)));
+      className: `col-sm-${size} col-record`
+    }, name, sort_field != "" ? /* @__PURE__ */ React.createElement("i", {
+      onClick: () => this.props.toggleSort(sort_field),
+      className: "fa fa-sort",
+      style: {fontSize: "15px", color: "#3e0d484d"}
+    }) : "")));
   }
 }
 class RecordsInfo extends React.Component {

@@ -7,17 +7,13 @@ import ConfirmModal from "./ConfirmModal.jsx";
 
 import { BlockMath } from 'react-katex';
 
-// import MathJax from 'react-mathjax-preview' 
-// import MathJax from 'react-mathjax2'
-// Process math/code before display
 
-
-// Displayed field name - Filtered record Property - BS width
+// Displayed field name - Filtered record Property - BS width - Sortable field
 const all_fields = [
-    ['Name', 'd_name', 2],
-    ['Date', 'd_time', 2],
-    ['Question', 'question_nb', 2],
-    ['Answer', '', 6]
+    ['Name', 'd_name', 2, 'd_name'],
+    ['Date', 'd_time', 2, 'f_time'],
+    ['Question', 'question_nb', 2, 'question_nb'],
+    ['Answer', '', 6, '']
 ]
 
 class RecordsList extends React.Component {
@@ -34,7 +30,9 @@ class RecordsList extends React.Component {
                 'd_name': '',
                 'd_time': '',
                 'question_nb': ''
-            }
+            },
+            'sort_field': 'd_time',
+            'sort_direction': 1,
         };
     }
 
@@ -54,8 +52,6 @@ class RecordsList extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // MathJax?.Hub.Queue(["Typeset", MathJax.Hub]);
-        // MathJax.typeset();
         Rainbow.color();
     }
 
@@ -152,7 +148,7 @@ class RecordsList extends React.Component {
     updateVisibleRecords() {
         let filters = this.state.filters;
         let visible_records = [];
-
+        
         try {
             visible_records = this.state.records.filter(record => {
                 return (Object.keys(filters).every(key => {
@@ -165,8 +161,14 @@ class RecordsList extends React.Component {
             visible_records = [...this.state.records];
         }
         
-        // visible_records.sort((a, b) => a.d_name < b.d_name);
-        // visible_records.sort((a, b) => a.f_time < b.f_time);
+        visible_records.sort((a, b) => {
+            if (a[this.state.sort_field] < b[this.state.sort_field])
+                return -this.state.sort_direction;
+            if (a[this.state.sort_field] > b[this.state.sort_field])
+                return this.state.sort_direction;
+            return 0;
+        });
+
         this.setState({ 'visible_records': visible_records });
     }
 
@@ -183,6 +185,14 @@ class RecordsList extends React.Component {
         this.setState({
             name_visible: !this.state.name_visible
         });
+    }
+
+    toggleSort(field) {
+        var sort_direction = this.state.sort_field == field ? -this.state.sort_direction : 1;
+        this.setState({
+            sort_field: field,
+            sort_direction: sort_direction
+        }, this.updateVisibleRecords);
     }
 
     render() {
@@ -207,7 +217,7 @@ class RecordsList extends React.Component {
                     </div>
                 </div>
             </div>,
-            <RecordsHeader key="header" toggleName={this.toggleName.bind(this)} name_visible={this.state.name_visible} />,
+            <RecordsHeader key="header" toggleName={this.toggleName.bind(this)} toggleSort={this.toggleSort.bind(this)} name_visible={this.state.name_visible} />,
             <RecordsSearchbar key="searchbar" session={session} loadRecords={this.loadRecords.bind(this)} delete={this.deleteRecords.bind(this)} clearFilters={this.clearFilters.bind(this)} onFilterChange={this.onFilterChange.bind(this)} />,
             <div className="row" style={{ overflowY: "auto" }}>
             {/* <div className="row"> */}
@@ -269,9 +279,18 @@ class RecordsHeader extends React.Component {
     render() {
         return (
             <div className="row header row-record">
-                <div className={`col-sm-${all_fields[0][2]} col-record`}>Name  <i onClick={this.props.toggleName} className={"fa fa-eye" + (this.props.name_visible ? "" : "-slash")} style={{ "fontSize": "15px",  }}></i></div>
-                {all_fields.slice(1).map(([name, _, sz]) =>
-                    <div key={name} className={`col-sm-${sz} col-record`}>{name}</div>
+                <div className={`col-sm-${all_fields[0][2]} col-record`}>
+                    Name
+                    <i onClick={this.props.toggleName} className={"fa fa-eye" + (this.props.name_visible ? "" : "-slash")} style={{ "fontSize": "15px",  }}></i>
+                    <i onClick={() => this.props.toggleSort("d_name")} className={"fa fa-sort"} style={{ "fontSize": "15px", "color": "#3e0d484d" }}></i>
+                </div>
+                {all_fields.slice(1).map(([name, field, size, sort_field]) =>
+                    <div key={name} className={`col-sm-${size} col-record`}>
+                        {name}
+                        {sort_field != ""
+                        ? <i onClick={() => this.props.toggleSort(sort_field)} className={"fa fa-sort"} style={{ "fontSize": "15px", "color": "#3e0d484d" }}></i>
+                        : ""}
+                    </div>
                 )}
             </div>
         );
@@ -317,6 +336,7 @@ class RecordsRow extends React.Component {
         );
     }
 }
+
 
 const domContainer = document.querySelector('#records-list');
 window.record_list = ReactDOM.render(React.createElement(RecordsList), domContainer);
