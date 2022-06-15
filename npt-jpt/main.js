@@ -52,7 +52,7 @@ define([
             c.source = c.source.replace(/.*#+ *HIDE *LINE *\n*/g,
                 (_) => ``);
 
-            c.source = c.source.replace(/(.*=).*#+ *TODO *OPERAND */g,
+            c.source = c.source.replace(/(.*?=).*#+ *TODO *OPERAND */g,
                 (_, left) => `${left} ${replace_text}`);
 
             c.source = c.source.replace(/(.*=).*#+ *HIDE *OPERAND */g,
