@@ -55,7 +55,7 @@ define([
             c.source = c.source.replace(/(.*?=).*#+ *TODO *OPERAND */g,
                 (_, left) => `${left} ${replace_text}`);
 
-            c.source = c.source.replace(/(.*=).*#+ *HIDE *OPERAND */g,
+            c.source = c.source.replace(/(.*?=).*#+ *HIDE *OPERAND */g,
                 (_, left) => `${left}`);
 
             if (c.cell_type === "code" && clear_outputs) {
