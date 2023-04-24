@@ -62,7 +62,7 @@ def _npt_get_file(object):
 
 def _npt_get_binary_image(img, save_fn):
     with io.BytesIO() as buffer:
-        getattr(img, save_fn)(buffer, format='jpeg', quality=20)
+        getattr(img, save_fn)(buffer, format='jpeg')
         return buffer.getvalue()
 
 def send(data, q_nb):
